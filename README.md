@@ -1,8 +1,8 @@
 # Recommendation Paper Reading
 
-推荐系统论文阅读室。GitHub Pages 静态前端 + GitHub Actions 每日采集，Python 标准库实现，无 npm/pip 运行依赖。
+推荐系统论文阅读室。GitHub Pages 静态前端 + Codex 定时编辑 + GitHub Actions 校验发布，Python 标准库实现，无 npm/pip 运行依赖。
 
-**交付状态（2026-10-26）：代码与历史恢复完成；实际部署结果见 `DEPLOYMENT_STATUS.md`。仓库存在不代表网站已上线。**
+**当前方式：Codex 每天北京时间 09:17 维护，不需要 API 密钥。电脑需在线且 Codex 应用需运行；实际部署与验证状态见 [DEPLOYMENT_STATUS.md](DEPLOYMENT_STATUS.md)。**
 
 ## 网站包含什么
 
@@ -27,21 +27,28 @@
 
 历史摘要和评分保留原对话内容并标记“未重新核验”。仅抽查了 2610.23453 和 2610.30612 的官方摘要页面，没有重新验证全部实验结论。自动新增摘要严格标明只读了 arXiv 摘要；本项目不冒充全文研究服务。
 
-## 部署：最短操作路径
+## 部署与日常更新（默认不使用 API）
 
-建议仓库：`yyysyyy/recommendation-paper-reading`，站点名保留空格和大小写。
+仓库：[yyysyyy/recommendation-paper-reading](https://github.com/yyysyyy/recommendation-paper-reading)；网站：[Recommendation Paper Reading](https://yyysyyy.github.io/recommendation-paper-reading/)。
 
-1. 在 GitHub 建立仓库，默认分支为 `main`。免费方案可选择公开仓库；实际支持范围以 GitHub 账户方案为准。
-2. 将本目录所有源文件上传至仓库根目录。必须包含隐藏目录 `.github/`，不要只上传 `dist/`，也不要将外层 `recsys-daily/` 再套一层。
-3. **Settings → Pages → Build and deployment → Source → GitHub Actions**。
-4. **Settings → Secrets and variables → Actions → Secrets**，新增 `OPENAI_API_KEY`。
-5. 可选 **Variables**：`LLM_MODEL`（默认 `gpt-4.1-mini`），`LLM_BASE_URL`（默认 `https://api.openai.com/v1`）。密钥只能放 Secret，不能放 Variable。第三方服务必须兼容 **Responses API + strict JSON schema**；仅支持 Chat Completions 的网关不能直接使用。
-6. **Actions → Daily digest and Pages → Run workflow**。首次选 `collect=false`，先部署现有历史；之后选 `collect=true` 测试采集。已存在当天日报时会直接跳过，下一北京时间日期才生成新刊。
-7. 等待 prepare、deploy 都成功，打开部署环境中返回的 Pages URL，并核对首页最近一期和历史数量。通常项目站点为 `https://yyysyyy.github.io/recommendation-paper-reading/`；必须以实际成功部署的 URL 为准。
+1. 仓库 **Settings → Pages → Build and deployment → Source → GitHub Actions**。
+2. Codex 定时任务每天北京时间 **09:17** 读取最新仓库、抓取候选、逐篇审核、校验和提交数据。GitHub Actions 在 main 更新后运行测试、构建和 Pages 部署。
+3. 不需要配置 `OPENAI_API_KEY`。GitHub workflow 默认没有 schedule，`collect` 默认关闭，避免与 Codex 重复采集。
+4. 本地定时任务需要电脑在线、Codex 应用运行、ChatGPT 登录有效、可用订阅额度、联网权限和 GitHub 授权。睡眠、退出应用或授权失效会影响运行，不承诺准点或后台云托管。访问者无需保持电脑在线，已部署网站由 GitHub 托管。
+5. 复制或 fork 这个仓库不会复制 Codex 的本地定时任务；在自己的 Codex 中另行建立同样的任务。调度配置不包含在 Git 仓库中。
 
-每日计划是北京时间 **09:17**，工作流 cron 使用 UTC `01:17`。GitHub 的计划任务可能延迟或丢弃，不提供准点送达保证；只在默认分支运行，公开仓库长期无活动可能暂停计划任务。发现未更新时查看 Actions，必要时手动运行。参考 [GitHub 计划任务说明](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule)。
+完整操作与重跑说明见 [docs/CODEX_MAINTENANCE.md](docs/CODEX_MAINTENANCE.md)。网页过期时先查看 Codex 本次任务和 GitHub Actions；获取最新仓库后重新执行维护即可，不补造错过日期的日报。
 
-工作流假定 `main` 是默认分支。若使用其他分支，必须同步修改触发分支、job 条件、checkout ref 和 push 目标。
+### 可选：改成云端 API 采集
+
+仅在你希望关机也自动更新时使用。先暂停 Codex 定时任务，避免两种编辑器同时运行。
+
+- **Settings → Secrets and variables → Actions → Secrets → Repository secrets → New repository secret**，添加 `OPENAI_API_KEY`。从 [OpenAI API keys](https://platform.openai.com/api-keys) 创建，API 账单与 ChatGPT 订阅分开；不要发到聊天或写入仓库。
+- **Variables → Repository variables** 新增 `ENABLE_API_COLLECTOR=true`；可选 `LLM_MODEL`（默认 gpt-4.1-mini）及 `LLM_BASE_URL`（默认 https://api.openai.com/v1）。第三方必须支持 Responses API + strict JSON schema，仅 Chat Completions 网关不兼容。
+- **Actions → Daily digest and Pages → Run workflow**，选择 `collect=true` 手动验证。未启用开关时显式失败，不假装采集成功；当天已有日报会幂等跳过。
+- 确认账单与效果后，在 workflow 的 `on` 下添加 schedule（UTC 01:17 对应北京时间09:17），并将采集条件扩展为 schedule 或获准的手动运行。仓库当前没有启用此付费云端计划。GitHub 不保证计划任务准点。
+
+工作流假定默认分支是 main；更换时同步修改触发、job 条件、checkout 和 push 目标。
 
 ### 通过终端上传
 
@@ -71,26 +78,30 @@ python3 -m http.server 8765 --bind 127.0.0.1 --directory dist
 
 浏览器打开 `http://127.0.0.1:8765/`，不要双击 HTML；`file://` 无法正常读取 JSON。所有前端资源均使用相对路径，支持 GitHub Pages 项目子路径，无外部字体、CDN 或跟踪脚本。
 
-采集需将密钥以当前进程环境变量提供，再运行：
+无需 API 的维护命令：
 
 ```sh
-python3 -m pipeline.cli update
+python3 -m pipeline.cli prepare-review /absolute/path/candidates.json
+# Codex 阅读候选并按快照中的 review_schema 填写 reviews.json
+python3 -m pipeline.cli publish-reviews /absolute/path/candidates.json /absolute/path/reviews.json
 python3 -m pipeline.cli validate
 python3 -m pipeline.cli build
 ```
 
-程序不会自动加载 `.env`。请不要把真实密钥写进命令历史、源文件或截图。日常运行优先使用 GitHub Secrets。
+`prepare-review` 当天已有日报时跳过；附加 `--preview` 可只读检查候选，不生成第二期。`publish-reviews` 只接收同日、同账本、同配置、完整审核的批次，验证通过才写数据。两个命令都不会调用 LLM API。CLI 路径应放在仓库以外的临时目录。
+
+可选 API 模式使用 `python3 -m pipeline.cli update`，需要进程环境中的 OPENAI_API_KEY；程序不会自动加载 .env。
 
 ## 抓取与去重机制
 
 1. 按 UTC 查询 arXiv API 的 `submittedDate`，默认四个分类 cs.IR、cs.LG、cs.AI、cs.CL。覆盖近 7 天，再按原始 `published` 时间分为最近 72 小时和 72 小时至 7 天补漏。
-2. 分页抓取，每页 100 条，请求间隔至少 3.1 秒。超过 2000 条时失败，要求提高 `max_fetch` 或缩小分类，不悄悄截断；API 错误页和分页异常也失败。
+2. 分页抓取，每页 200 条，请求间隔至少 3.1 秒。超过 5000 条时失败，要求提高 `max_fetch` 或缩小分类，不悄悄截断；API 错误页和分页异常也失败。
 3. 标题/摘要关键词进行本地预筛。每天最多评估 24 篇，约 1/3 名额预留给补漏；剩余名额在两组之间复用。页面记录扫描、评估和延后数量。**这是预算内筛选，不保证发现每篇相关论文**；过期未评估论文可能漏掉，可调高预算。
-4. 每篇调用一次 Responses API，要求中文结构化输出。摘要的连续原文片段必须确实出现在输入摘要中，评分、方向和建议均本地校验；这能发现格式和部分证据错误，不能证明整段摘要没有幻觉。
+4. 默认由当前 Codex 会话逐篇提供中文结构化审核；可选 API 模式每篇调用一次 Responses API。摘要的连续原文片段必须确实出现在输入摘要中，评分、方向和建议均本地校验；这能发现格式和部分证据错误，不能证明整段摘要没有幻觉。
 5. `data/history.jsonl` 是已推荐主账本，按归一化 arXiv ID 去重。`v1/v2`、abs/PDF URL、DOI URL 都归为同一 ID，保留首次推荐日期。已有记录不因新版本再次推荐。
 6. 精确归一化标题、人工维护 `data/aliases.json` 以及 `data/exclusions.json` 额外排除同标题或已知跨 ID 重复。当前 OneLatent/WhisperRec 别名与显式排除继承原对话，是保守判断，未独立核验；最早历史缺失时仍会保守排除 OneLatent。跨 ID 改题/扩写没有可靠自动判重保证。
-7. `data/evaluations.json` 只缓存成功评估，键包含 ID、更新时间、摘要、配置、模型和服务地址。拒选论文下次可复用；它们不进入已推荐历史。每天未入选的合格候选仍可在 7 天内补漏。
-8. `data/days.json` 保存每期 ID、状态、统计、模型 token 用量；同一个北京时间日期已存在就跳过，不重复花费或重复出刊。
+7. `data/evaluations.json` 保存成功评估，Codex 每次重新审阅本期候选，API 模式可复用缓存；键包含 ID、更新时间、摘要、配置、模型和服务地址。API 模式的拒选论文下次可复用；它们不进入已推荐历史。每天未入选的合格候选仍可在 7 天内补漏。
+8. `data/days.json` 保存每期 ID、状态、统计、编辑器来源（API 模式另有 token 用量）；同一个北京时间日期已存在就跳过，不重复花费或重复出刊。
 
 本次导入包含一篇原对话中的 10 月 16 日“高价值补漏”，按历史保留；自动采集不会自行扩大到 7 天以外。arXiv 的 `submittedDate` 按首次提交时间过滤，因此不覆盖早年论文的新版本，也不覆盖 arXiv 之外的论文。
 
@@ -110,12 +121,12 @@ python3 -m pipeline.cli build
 
 ## 失败安全与恢复
 
-- API key 缺失、arXiv 限流/错误、超出抓取上限、模型拒绝/截断/格式或证据校验失败：返回非零，不写入这次生成的数据，不发布“伪零篇”。任一候选失败会中止整期。
+- arXiv 限流/错误、超出抓取上限、审核缺项、快照过期、模型格式或证据校验失败（API 模式另含 key 缺失/拒绝/截断）：返回非零，不写入这次生成的数据，不发布“伪零篇”。任一候选失败会中止整期。
 - 真正抓取成功但没有合格论文：保存 `empty` 空刊，保留全部历史。
 - HTTP 429 / 5xx 最多重试 3 次；不确定是否已送达的模型网络超时不自动重试，避免额外计费。服务端 5xx 后重试仍可能重复计费。
 - 全部抓取与摘要成功后才写数据；每个文件使用临时文件 + 原子替换。**多文件一致性的持久事务边界是 Git commit**，不是文件系统数据库事务。Actions 中检查或进程失败的临时 checkout 会丢弃；本地若恰在多个文件替换之间被终止，运行 validate，必要时从上次 Git 提交恢复三个数据文件再重跑，不要提交不一致状态。
 - 提交前先 validate + build。普通非强制 push 若碰到别人更新会失败，不自动覆盖或重写历史；下一次运行基于新主分支重算。保护分支拒绝机器人直推时，需给机器人配置精确 bypass 或改成维护者审核的数据 PR 流程；不能直接启用宽泛绕过。
-- 采集、数据提交、Pages 上传和部署在同一条工作流中显式衔接，避免机器人 push 不触发另一个工作流的问题。并发任务按同一组排队，旧的半成品不会覆盖新的任务。
+- 默认由 Codex 通过 GitHub 授权提交后触发检查和部署；可选 API 模式把采集、数据提交和部署放在同一 workflow，避免 GITHUB_TOKEN 提交不会触发下一条 workflow 的问题。并发任务按同一组排队，旧的半成品不会覆盖新的任务。
 - Pages 部署失败时上一版仍可访问。若数据已经提交但部署失败，重跑同一工作流即可，日幂等会跳过 LLM，再构建部署。
 - 失败记录保存在 Actions job 状态和摘要；是否收到 GitHub 邮件取决于你的 Actions 通知设置。本项目没有额外发送邮件、Slack 或聊天通知。
 - 如需更正已出刊内容，直接在账本中更正文案并提交；默认不开放同日强制重采集开关。
@@ -127,7 +138,7 @@ python3 -m pipeline.cli build
 ## 文件说明
 
 ```text
-.github/workflows/daily.yml   每日抓取、校验、提交、发布
+.github/workflows/daily.yml   提交后校验与发布（API 采集为可选手动开关）
 .github/workflows/check.yml   PR 检查，无密钥
 config.json                  筛选标准、方向、预算与模型配置
 data/history.jsonl           已推荐主账本
@@ -136,6 +147,7 @@ data/evaluations.json        已评估候选缓存
 data/aliases.json            人工跨 ID 去重别名
 data/exclusions.json         人工排除（含原因）
 data/provenance.json         恢复来源与完整性边界
+docs/CODEX_MAINTENANCE.md    定时任务运行手册
 pipeline/                    标准库 Python 流程
 site/                        静态页面源文件
 tests/                       失败安全与核心逻辑测试

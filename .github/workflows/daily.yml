@@ -3,14 +3,12 @@ name: Daily digest and Pages
 on:
   push:
     branches: [main]
-  schedule:
-    - cron: '17 1 * * *' # 09:17 Asia/Shanghai; best-effort, not a delivery SLA
   workflow_dispatch:
     inputs:
       collect:
         description: 'Fetch arXiv and call LLM (false = deploy existing archive only)'
         type: boolean
-        default: true
+        default: false
 
 permissions:
   contents: read
@@ -39,12 +37,17 @@ jobs:
           python -m unittest discover -s tests -v
           python -m pipeline.cli validate
       - name: Collect and review (all or nothing)
-        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.collect)
+        if: github.event_name == 'workflow_dispatch' && inputs.collect && vars.ENABLE_API_COLLECTOR == 'true'
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           LLM_MODEL: ${{ vars.LLM_MODEL }}
           LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
         run: python -m pipeline.cli update
+      - name: Reject an API run that was not enabled
+        if: github.event_name == 'workflow_dispatch' && inputs.collect && vars.ENABLE_API_COLLECTOR != 'true'
+        run: |
+          echo 'API collection is disabled. Codex maintains this archive. See README for optional API setup.'
+          exit 1
       - name: Validate and build before committing
         run: |
           python -m pipeline.cli validate

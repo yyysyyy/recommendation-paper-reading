@@ -196,9 +196,11 @@ def harvest(config, now, client):
         found_total, page = parse_feed(client.request("https://export.arxiv.org/api/query?" + urllib.parse.urlencode(args)))
         if total is None:
             total = found_total
+        if found_total != total:
+            raise SafeError("arXiv result count changed during pagination; retry later")
         if total > config["max_fetch"]:
             raise SafeError("arXiv query exceeds max_fetch; increase cap or narrow categories; no partial digest")
-        if not page and start < total:
+        if len(page) != min(config["page_size"], max(0, total - start)):
             raise SafeError("arXiv pagination is incomplete")
         for p in page:
             if since <= parse_time(p["published"]) <= now:
@@ -299,34 +301,23 @@ def validate_state(rows, days):
         raise SafeError("History is not assigned exactly once to daily issues")
 
 
-def update(root=ROOT, now=None, client=None):
-    root = Path(root)
-    config = read_json(root / "config.json")
-    now = now or dt.datetime.now(UTC)
-    today = now.astimezone(ZoneInfo(config["timezone"])).date().isoformat()
-    history = load_history(root / "data/history.jsonl")
-    days = read_json(root / "data/days.json")
-    validate_state(history, days)
-    if today in days:
-        return {"status": "already_published", "date": today, "picks": len(days[today]["ids"])}
-    if not os.environ.get("OPENAI_API_KEY"):
-        raise SafeError("OPENAI_API_KEY missing; no data changed")
-    client = client or HttpClient()
-    papers, scanned = harvest(config, now, client)
+def work_id(key, aliases):
+    visited = set()
+    while key in aliases:
+        if key in visited:
+            raise SafeError("Alias cycle")
+        visited.add(key)
+        key = canonical_id(aliases[key])
+    return key
+
+
+def shortlist(papers, config, history, root):
     known = {r["id"] for r in history}
     known_titles = {title_key(r["title"]) for r in history}
     aliases = read_json(root / "data/aliases.json")
     exclusions = {canonical_id(key) for key in read_json(root / "data/exclusions.json")}
-    def work_id(key):
-        visited = set()
-        while key in aliases:
-            if key in visited:
-                raise SafeError("Alias cycle")
-            visited.add(key)
-            key = canonical_id(aliases[key])
-        return key
-    known_works = {work_id(key) for key in known}
-    candidates = [p for p in papers if p["id"] not in known and p["id"] not in exclusions and work_id(p["id"]) not in known_works and title_key(p["title"]) not in known_titles and relevance(p, config) > 0]
+    known_works = {work_id(key, aliases) for key in known}
+    candidates = [p for p in papers if p["id"] not in known and p["id"] not in exclusions and work_id(p["id"], aliases) not in known_works and title_key(p["title"]) not in known_titles and relevance(p, config) > 0]
     # Main window is prioritized, while reserving 1/3 for seven-day omissions.
     ordered = sorted(candidates, key=lambda p: (-relevance(p, config), -parse_time(p["published"]).timestamp()))
     recent = [p for p in ordered if p["window"] == "72h"]
@@ -336,11 +327,36 @@ def update(root=ROOT, now=None, client=None):
     chosen = recent[:quota] + older[:cap - quota]
     chosen_ids = {p["id"] for p in chosen}
     chosen += [p for p in ordered if p["id"] not in chosen_ids][:cap - len(chosen)]
+    return chosen, len(candidates)
+
+
+def update(root=ROOT, now=None, client=None, prepared=None, review_function=None):
+    root = Path(root)
+    config = read_json(root / "config.json")
+    now = now or dt.datetime.now(UTC)
+    today = now.astimezone(ZoneInfo(config["timezone"])).date().isoformat()
+    history = load_history(root / "data/history.jsonl")
+    days = read_json(root / "data/days.json")
+    validate_state(history, days)
+    if today in days:
+        return {"status": "already_published", "date": today, "picks": len(days[today]["ids"])}
+    if review_function is None and not os.environ.get("OPENAI_API_KEY"):
+        raise SafeError("OPENAI_API_KEY missing; no data changed")
+    client = client or HttpClient()
+    papers, scanned = harvest(config, now, client) if prepared is None else (prepared["papers"], prepared["scanned"])
+    chosen, candidate_count = shortlist(papers, config, history, root)
+    if prepared is not None:
+        candidate_count = prepared["candidate_count"]
+    aliases = read_json(root / "data/aliases.json")
     cache = read_json(root / "data/evaluations.json")
     accepted, usage, calls = [], {"input_tokens": 0, "output_tokens": 0}, 0
     for paper in chosen:
-        ck = cache_key(paper, config)
-        if ck in cache:
+        ck = cache_key(paper, config if review_function is None else {**config, "editor": "Codex"})
+        if review_function is not None:
+            review, used = review_function(paper), {}
+            review = validate_review(review, paper, config)
+            cache[ck] = review
+        elif ck in cache:
             review = validate_review(cache[ck], paper, config)
         else:
             review, used = evaluate(paper, config, client)
@@ -351,11 +367,11 @@ def update(root=ROOT, now=None, client=None):
         if review["relevant"] and review["score"] >= config["min_score"] and review["reading"] != "跳过":
             record = {k: v for k, v in paper.items() if k != "abstract"}
             record.update(review)
-            record.update({"recommended_on": today, "source": "arxiv_api_llm_abstract", "evidence": "仅根据 arXiv 摘要生成，未经全文核验", "model": os.environ.get("LLM_MODEL") or config["model"], "rubric_version": config["rubric_version"]})
+            record.update({"recommended_on": today, "source": "codex_arxiv_abstract" if review_function else "arxiv_api_llm_abstract", "evidence": "仅根据 arXiv 摘要生成，未经全文核验", "model": "Codex (ChatGPT sign-in)" if review_function else (os.environ.get("LLM_MODEL") or config["model"]), "rubric_version": config["rubric_version"]})
             accepted.append(normalize_record(record))
     picks, selected_works, selected_titles = [], set(), set()
     for p in sorted(accepted, key=lambda p: -p["score"]):
-        work, title = work_id(p["id"]), title_key(p["title"])
+        work, title = work_id(p["id"], aliases), title_key(p["title"])
         if work in selected_works or title in selected_titles:
             continue
         picks.append(p)
@@ -365,7 +381,8 @@ def update(root=ROOT, now=None, client=None):
             break
     history += picks
     days[today] = {"status": "ok" if picks else "empty", "ids": [p["id"] for p in picks], "generated_at": now.isoformat(), "scanned": scanned,
-                   "relevant_candidates": len(candidates), "evaluated": len(chosen), "deferred": len(candidates) - len(chosen), "llm_calls": calls, "usage": usage,
+                   "relevant_candidates": candidate_count, "evaluated": len(chosen), "deferred": candidate_count - len(chosen), "llm_calls": calls,
+                   "usage": usage if review_function is None else None, "editor": "Codex" if review_function else "LLM API",
                    "note": "72 小时主窗口 + 7 天补漏；先关键词筛选，预算内由模型评分，非全量论文评审。"}
     validate_state(history, days)
     # No writes until every fetch, review, and validation has succeeded.
@@ -373,7 +390,57 @@ def update(root=ROOT, now=None, client=None):
     atomic_write(root / "data/history.jsonl", history_text(history))
     atomic_write(root / "data/days.json", dump(days))
     atomic_write(root / "data/evaluations.json", dump(cache))
-    return {"status": days[today]["status"], "date": today, "picks": len(picks), "llm_calls": calls, "usage": usage}
+    return {"status": days[today]["status"], "date": today, "picks": len(picks), "llm_calls": calls, "usage": usage if review_function is None else None}
+
+
+def state_digest(root):
+    names = ["config.json", "data/history.jsonl", "data/days.json", "data/aliases.json", "data/exclusions.json"]
+    return hashlib.sha256(b"\n".join((Path(root) / name).read_bytes() for name in names)).hexdigest()
+
+
+def snapshot_digest(snapshot):
+    return hashlib.sha256(json.dumps(snapshot, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+
+
+def prepare_review(output, root=ROOT, now=None, client=None, preview=False):
+    """Export real candidates without API keys; Codex reviews every shortlisted item."""
+    root = Path(root)
+    config = read_json(root / "config.json")
+    now = now or dt.datetime.now(UTC)
+    today = now.astimezone(ZoneInfo(config["timezone"])).date().isoformat()
+    history = load_history(root / "data/history.jsonl")
+    days = read_json(root / "data/days.json")
+    validate_state(history, days)
+    if today in days and not preview:
+        return {"status": "already_published", "date": today}
+    papers, scanned = harvest(config, now, client or HttpClient())
+    selected, count = shortlist(papers, config, history, root)
+    snapshot = {"schema_version": 1, "date": today, "generated_at": now.isoformat(), "state_digest": state_digest(root), "scanned": scanned,
+                "candidate_count": count, "papers": selected, "profile": config["profile"], "review_schema": schema(config)}
+    atomic_write(output, dump(snapshot))
+    return {"status": "prepared", "date": today, "scanned": scanned, "candidate_count": count, "shortlisted": len(selected), "snapshot_sha256": snapshot_digest(snapshot), "output": str(output)}
+
+
+def publish_reviews(snapshot_file, review_file, root=ROOT, now=None):
+    """Accept complete offline Codex reviews; reject stale/mixed/partial batches."""
+    root = Path(root)
+    config = read_json(root / "config.json")
+    now = now or dt.datetime.now(UTC)
+    snapshot, batch = read_json(snapshot_file), read_json(review_file)
+    today = now.astimezone(ZoneInfo(config["timezone"])).date().isoformat()
+    if snapshot.get("schema_version") != 1 or snapshot.get("date") != today or state_digest(root) != snapshot.get("state_digest"):
+        raise SafeError("Stale review snapshot; prepare a fresh one before publishing")
+    if batch.get("snapshot_sha256") != snapshot_digest(snapshot):
+        raise SafeError("Reviews belong to another snapshot")
+    reviews = batch.get("reviews")
+    keys = [p["id"] for p in snapshot["papers"]]
+    if len(keys) != len(set(keys)) or not isinstance(reviews, dict) or set(reviews) != set(keys):
+        raise SafeError("All shortlisted papers need exactly one review; no extra IDs allowed")
+    if len(keys) > min(config["max_candidates"], config["max_calls_per_run"]):
+        raise SafeError("Review batch exceeds configured budget")
+    for paper in snapshot["papers"]:
+        validate_review(reviews[paper["id"]], paper, config)
+    return update(root, now, prepared=snapshot, review_function=lambda p: reviews[p["id"]])
 
 
 def import_history(source, root=ROOT):

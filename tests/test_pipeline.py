@@ -181,5 +181,62 @@ class PipelineTests(unittest.TestCase):
         self.assertNotIn('innerHTML',code)
         self.assertNotIn('OPENAI_API_KEY',(out/'data.json').read_text())
 
+    def prepare_batch(self, papers=None):
+        snapshot=self.root/'snapshot.json'; batch=self.root/'reviews.json'
+        with patch.dict(os.environ,{},clear=True),patch.object(c,'harvest',return_value=(papers if papers is not None else [paper()],1)):
+            result=c.prepare_review(snapshot,self.root,NOW)
+        data=c.read_json(snapshot)
+        batch.write_text(c.dump({'snapshot_sha256':result['snapshot_sha256'],'reviews':{p['id']:review() for p in data['papers']}}))
+        return snapshot,batch
+
+    def test_codex_prepare_and_publish_never_use_api(self):
+        before=self.snapshots()
+        snapshot,batch=self.prepare_batch()
+        self.assertEqual(before,self.snapshots())
+        with patch.dict(os.environ,{},clear=True),patch.object(c,'evaluate') as api,patch.object(c,'harvest') as fetch:
+            result=c.publish_reviews(snapshot,batch,self.root,NOW)
+            api.assert_not_called();fetch.assert_not_called()
+        self.assertEqual(result['picks'],1);self.assertEqual(result['llm_calls'],0)
+        self.assertIsNone(result['usage'])
+        self.assertEqual(c.load_history(self.root/'data/history.jsonl')[0]['source'],'codex_arxiv_abstract')
+        with patch.object(c,'harvest') as fetch:
+            self.assertEqual(c.prepare_review(snapshot,self.root,NOW)['status'],'already_published')
+            fetch.assert_not_called()
+
+    def test_codex_rejects_stale_state_date_and_mixed_snapshot(self):
+        snapshot,batch=self.prepare_batch();before=self.snapshots()
+        with self.assertRaises(c.SafeError):c.publish_reviews(snapshot,batch,self.root,NOW+dt.timedelta(days=1))
+        data=c.read_json(batch);data['snapshot_sha256']='wrong';batch.write_text(c.dump(data))
+        with self.assertRaises(c.SafeError):c.publish_reviews(snapshot,batch,self.root,NOW)
+        snapshot,batch=self.prepare_batch()
+        (self.root/'data/exclusions.json').write_text('{"2610.88888":"changed"}')
+        changed=self.snapshots()
+        with self.assertRaises(c.SafeError):c.publish_reviews(snapshot,batch,self.root,NOW)
+        self.assertEqual(changed,self.snapshots())
+        self.assertNotEqual(before,changed)
+
+    def test_codex_partial_extra_and_invalid_reviews_never_publish(self):
+        snapshot,batch=self.prepare_batch([paper(),paper('2610.99992',title='Recommendation second paper')])
+        original=c.read_json(batch);before=self.snapshots()
+        bad_cases=[]
+        missing=copy.deepcopy(original);missing['reviews'].pop('2610.99992');bad_cases.append(missing)
+        extra=copy.deepcopy(original);extra['reviews']['2610.88888']=review();bad_cases.append(extra)
+        invalid=copy.deepcopy(original);invalid['reviews']['2610.99992']['evidence_quote']='An invented claim without evidence.';bad_cases.append(invalid)
+        for data in bad_cases:
+            batch.write_text(c.dump(data))
+            with self.assertRaises(c.SafeError):c.publish_reviews(snapshot,batch,self.root,NOW)
+            self.assertEqual(before,self.snapshots())
+
+    def test_codex_successful_empty_batch_is_empty_issue(self):
+        snapshot,batch=self.prepare_batch([])
+        result=c.publish_reviews(snapshot,batch,self.root,NOW)
+        self.assertEqual(result['status'],'empty');self.assertEqual(result['picks'],0)
+
+    def test_codex_preview_preserves_ledger_and_excludes_known_papers(self):
+        self.seed();before=self.snapshots();snapshot=self.root/'snapshot.json'
+        with patch.object(c,'harvest',return_value=([paper()],1)):
+            result=c.prepare_review(snapshot,self.root,NOW-dt.timedelta(days=1),preview=True)
+        self.assertEqual(result['shortlisted'],0);self.assertEqual(before,self.snapshots())
+
 
 if __name__=='__main__':unittest.main()
