@@ -1,0 +1,13 @@
+{
+  "source_conversation": "6ad7594a-9f20-83ec-9cee-a22c9ed7d7b5",
+  "retrieved_on": "2026-10-26",
+  "library_path_requested": "/Research/recommendation_paper_history.jsonl",
+  "library_access": "No callable Library file reader or downloadable attachment was returned; original JSONL not retrieved.",
+  "recovered_records": 17,
+  "expected_records": 20,
+  "missing_records": 3,
+  "coverage": "Detailed recommendations dated 2026-10-21 through 2026-10-26; earliest 3 entries mentioned by conversation are missing. No claim of complete 90-day deduplication.",
+  "summary_verification": "Historical summaries and subjective scores preserved from conversation, not independently revalidated. Official abstract pages for 2610.23453 and 2610.30612 were spot-checked on 2026-10-26, not their full historical claims.",
+  "profile_status": "Inferred from recommendations and experiment suggestions; full original personal selection prompt was not returned.",
+  "alias_status": "OneLatent/WhisperRec equivalence is a conservative manual exclusion inherited from conversation, not independently verified. Remove from aliases.json if later evidence disproves it."
+}

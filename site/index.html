@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="推荐系统论文阅读室：每日精选、研究方向、阅读建议与历史档案。">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="color-scheme" content="light dark">
+  <title>Recommendation Paper Reading · 推荐论文阅读室</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#content">跳到论文列表</a>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="阅读室首页"><span class="brand-icon">R<span>↗</span></span><span>Recommendation<br><strong>Paper Reading</strong></span></a>
+    <nav aria-label="主导航"><button id="nav-daily" class="nav active" type="button">每日精选</button><button id="nav-history" class="nav" type="button">历史档案</button><button id="nav-about" class="nav" type="button">筛选与来源</button></nav>
+    <button id="theme" class="theme" type="button" aria-label="切换深色模式">◐</button>
+  </header>
+
+  <main id="content">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy"><p class="eyebrow"><span class="green-dot"></span> THE RECOMMENDATION READING ROOM</p><h1 id="hero-title">让好论文，<br>成为下一次<span>好实验。</span></h1><p class="intro">从生成式推荐到工业实践，记录值得读的研究。<br>少一点信息噪声，多一点可以验证的想法。</p><div class="hero-links"><a href="#papers" class="primary-link">开始阅读 <span>↗</span></a><span class="schedule">每日计划 · 北京时间 09:17</span></div></div>
+      <aside class="notebook" aria-label="本期阅读笔记"><div class="note-head"><span>RESEARCH NOTES</span><span>✳</span></div><p class="note-date" id="note-date">读取档案中</p><h2 id="note-title">一个值得验证<br>的研究想法</h2><p id="note-copy">正在加载本期精选。</p><div class="note-bottom"><span>从论文，走向实验</span><span>↗</span></div><div class="note-orbit" aria-hidden="true"></div></aside>
+    </section>
+
+    <section class="stats" aria-label="档案统计"><div><span class="stat-value" id="stat-papers">—</span><span class="stat-label">篇已收录论文</span></div><div><span class="stat-value" id="stat-days">—</span><span class="stat-label">期研究日报</span></div><div><span class="stat-value" id="stat-topics">—</span><span class="stat-label">个关注方向</span></div><div class="status-stat"><span class="stat-label">最近一期</span><strong id="last-date">等待加载</strong><span id="freshness">来源信息随记录保留</span></div></section>
+
+    <section id="reader">
+      <div class="section-head" id="papers"><div><p class="eyebrow" id="section-kicker">THE DAILY SELECTION</p><h2 id="section-title">每日精选 <span>Daily picks</span></h2></div><label class="date-control">选择日期 <select id="date" aria-label="选择日报日期"></select></label></div>
+      <div class="tools"><label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="搜索论文、关键词、arXiv ID…" aria-label="搜索论文"></label><label class="reading-select">阅读建议 <select id="reading"><option value="">全部</option><option>必读</option><option>值得读</option><option>按需读</option></select></label></div>
+      <div class="filters" id="filters" role="group" aria-label="按研究方向筛选"></div>
+      <div class="list-meta"><span id="result-count" aria-live="polite">正在加载论文…</span><span>精选重质量，允许零篇</span></div>
+      <div id="day-note" class="day-note"></div>
+      <div id="cards" class="cards" aria-live="polite"></div>
+      <div id="empty" class="empty" hidden><span>✳</span><h3>给研究留一点空白。</h3><p id="empty-text">没有符合当前条件的论文，试试其他方向。</p><button id="clear-filters" type="button">重置筛选</button></div>
+    </section>
+
+    <section id="about" class="about" hidden><p class="eyebrow">HOW WE READ</p><h2>筛选有偏好，证据有边界。</h2><div class="about-grid"><article><span>01 / RELEVANCE</span><h3>从实际问题出发</h3><p>优先 GR、Semantic ID、长序列建模、GR + CF 融合，以及能降低实验成本的训练与推理方法。</p></article><article><span>02 / EVIDENCE</span><h3>把结论放回证据里</h3><p>自动日报只依据 arXiv 摘要。评分是编辑判断，不能代替全文阅读；离线提升不等同于线上收益。</p></article><article><span>03 / CONTINUITY</span><h3>保留历史，承认缺口</h3><p id="provenance-text"></p><p><a href="./history.jsonl" download>导出完整历史 ↗</a> · <a href="./import-example.jsonl" download>导入格式示例 ↗</a></p></article><article><span>04 / AUTOMATION</span><h3>让更新可追溯</h3><p>72 小时主窗口 + 7 天补漏，版本归一化去重。无好论文时发布空刊；抓取或摘要失败时保留上一版。导入由仓库维护者执行，访客不能改写历史。</p></article></div></section>
+    <section class="source-notice"><span>i</span><p id="source-notice">正在读取历史来源与完整性说明。</p><button type="button" id="source-details">查看来源 ↗</button></section>
+    <noscript><p>启用 JavaScript 可浏览和筛选论文。也可以直接下载 <a href="./history.jsonl">历史 JSONL</a>。</p></noscript>
+  </main>
+  <footer><a class="footer-brand" href="./">R↗ <span>Recommendation Paper Reading</span></a><span>保持好奇，保持验证。<small>arXiv · 摘要辅助阅读 · 人工判断优先</small></span><a href="./history.jsonl" download>历史数据 ↓</a></footer>
+</body>
+</html>

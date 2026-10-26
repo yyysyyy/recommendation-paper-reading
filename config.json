@@ -1,0 +1,21 @@
+{
+  "site_name": "Recommendation Paper Reading",
+  "timezone": "Asia/Shanghai",
+  "categories": ["cs.IR", "cs.LG", "cs.AI", "cs.CL"],
+  "recent_hours": 72,
+  "backfill_days": 7,
+  "page_size": 100,
+  "max_fetch": 2000,
+  "max_candidates": 24,
+  "max_picks": 4,
+  "min_score": 80,
+  "model": "gpt-4.1-mini",
+  "api_base_url": "https://api.openai.com/v1",
+  "max_output_tokens": 1800,
+  "max_calls_per_run": 24,
+  "max_input_chars_per_paper": 12000,
+  "rubric_version": "2026-10-26-v1",
+  "topics": ["生成式推荐", "Semantic ID", "长序列建模", "召回与融合", "CTR / 精排", "Scaling / 效率", "训练与蒸馏", "评估与仿真"],
+  "positive_keywords": ["recommend", "semantic id", "generative retrieval", "collaborative filtering", "click-through", "ctr prediction", "user behavior", "user behaviour", "sequential recommendation", "sequence compression", "test-time regression", "vector search", "hybrid retrieval", "softmax", "distillation", "scaling law"],
+  "profile": "从原日报推断的个人偏好，非完整原始指令：优先生成式推荐 GR、SID 冲突/层次/Prefix 负载均衡、MTP、Decision Token、长用户行为序列、GR+CF/token2tokenCF/U2I 融合；其次工业 CTR/CVR、向量召回、蒸馏和稳定性、低成本 Proxy/Scaling 实验。重视真实线上证据、代码可复现性、实际迁移价值；泛 LLM/Agent 仅在与推荐明确相关时入选。宁缺毋滥，可以零篇。区分百分点与相对百分比，理论 FLOPs 与端到端延迟，文本检索与推荐，离线指标与线上 GMV。必须说明局限与最小可行验证实验；仅有摘要时不得假称读过全文或验证代码。"
+}
