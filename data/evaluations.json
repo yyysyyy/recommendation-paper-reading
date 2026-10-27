@@ -1,1 +1,348 @@
-{}
+{
+  "7b1a8d78e62796aa375c0315e9f635d8319998fecd9c48fff8201bfddd1f937d": {
+    "score": 94,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "Semantic ID",
+      "训练与蒸馏"
+    ],
+    "reading": "必读",
+    "summary": "仅据摘要，MuSID-KD针对生成式推荐蒸馏中仅对齐最终商品分布、忽略SID层级贡献的问题，联合提出前缀候选分布对齐HCDA与排序影响引导的逐层蒸馏RIGD。前者按共享前缀聚合概率，后者按教师分数替换对成对排序损失的影响分配监督。在三种轻量学生结构上报告精度与分布对齐改善，在线结构无需改变。",
+    "why_read": "与你的SID前缀负载、分层预测及GR轻量化直接相关。可将最终商品排序、前缀概率和不同SID层的监督强度分开检查，避免单一蒸馏目标掩盖层间差异。",
+    "limitations": "证据仅来自摘要，未给出具体增益、训练成本及线上时延；不能将在线结构不变等同于确定的加速收益。摘要提供匿名代码链接，但本次未访问或核验。",
+    "experiment": "固定SID和学生网络，对比硬标签、商品级蒸馏、增加HCDA及完整RIGD四组，分层记录前缀分布误差、目标路径存活率、Recall及训练开销。",
+    "evidence_quote": "without modifying the student's online inference architecture."
+  },
+  "9f1e06819d8793a40a4e2b01e8f42d80a9bc24d6ea9db9615bd51249c684c2d5": {
+    "score": 82,
+    "relevant": true,
+    "topics": [
+      "长序列建模",
+      "召回与融合"
+    ],
+    "reading": "值得读",
+    "summary": "仅据摘要，本文在跨域序列推荐中只迁移学习得到的用户表示，通过轻量适配器将源域表示映射到目标域空间，再与目标域交互序列结合，无需跨域共享原始行为或商品向量。对缺少源域行为的用户，模型退回目标域推荐分支；论文在基准与更接近部署的两种设置中报告共享和非共享用户均获得收益。",
+    "why_read": "如果已有多个业务域的用户向量服务，这种表示级迁移比联合搬运长行为序列更容易开展小规模实验，也能检验跨域信息对冷启动用户的真实价值。",
+    "limitations": "摘要没有具体提升幅度、缺失率分层与部署成本。仅传用户向量并不自动保证隐私安全；不清楚目标域分支收益来自联合训练的哪一部分。",
+    "experiment": "冻结源域编码器，只训练适配器与目标域融合层；按共享用户、非共享用户和源域信息缺失程度分桶，对比目标域单模型及随机源域向量。",
+    "evidence_quote": "user representations, without sharing raw interaction data or item embeddings across domains."
+  },
+  "9260772f5d87b5b4750836ddd4aaacb37523feaae3abacf389e58d0c3bea53e5": {
+    "score": 92,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "Semantic ID",
+      "训练与蒸馏"
+    ],
+    "reading": "必读",
+    "summary": "仅据摘要，SLIDE把离线逐商品Beam Search得到的高质量候选按教师分数排序，将其SID拼接成列表蒸馏目标，训练学生以一条自回归轨迹、贪心解码生成Top-K列表。它试图同时缓解列表后部正样本监督稀缺与贪心搜索范围不足，在FORGE和淘宝搜索上报告质量改善，并用补充强化学习实验检验列表生成。",
+    "why_read": "适合研究把昂贵搜索计算留在离线教师、在线用列表级学生承接的方案。与你的SID、MTP及低成本解码方向相关，尤其值得检查列表后部监督是否不足。",
+    "limitations": "摘要没有给出端到端延迟、重复商品率或线上效果。单条贪心轨迹仍会逐Token生成整个列表，不能把单次轨迹理解为只执行一次网络前向。",
+    "experiment": "固定教师与SID，比较逐商品Beam、硬标签列表模型及搜索列表蒸馏，分列表位置记录Recall、重复率、多样性和p95延迟，并控制总候选数。",
+    "evidence_quote": "Their Semantic IDs (SIDs) are then concatenated in beam-score order to form list-wise distillation targets."
+  },
+  "b6dc5b03aa0409878f2889b8cce7ef5404720f6a5ed18a983ca095ec38eaab5c": {
+    "score": 87,
+    "relevant": true,
+    "topics": [
+      "召回与融合",
+      "评估与仿真"
+    ],
+    "reading": "值得读",
+    "summary": "仅据摘要，论文研究商品共现相似度是否真正来自共同偏好。作者指出，即使用户独立消费商品，只要用户活跃度存在差异，多种常用相似度仍会产生强关联，并将其称为虚假相关。通过Rasch模型推导不同相似度下活跃度与商品热门度的影响，再与真实推荐数据集比较，帮助区分行为量混杂与偏好结构。",
+    "why_read": "与你用CF补充GR的方案直接有关：共现信号可能同时携带偏好与用户活跃度混杂。适合检查token2tokenCF或Item共现补召回到底在补长尾还是重放高活跃用户行为。",
+    "limitations": "摘要没有量化各数据集的混杂占比，也未证明某个校正能提升线上推荐。不能据此否定全部共现信号，Rasch独立消费假设也需要检验适用范围。",
+    "experiment": "按用户行为量分桶，构造保持活跃度和商品频率的独立消费基线；对比原始共现与基线残差的Top-K邻居、长尾覆盖和离线召回收益。",
+    "evidence_quote": "a substantial fraction of observed item-item similarity is an artifact of variance in user activity rather than shared taste."
+  },
+  "61505906af247eb7ceaecb884135d52bbcab7a84d9748e31319efff4d085e113": {
+    "score": 83,
+    "relevant": true,
+    "topics": [
+      "CTR / 精排",
+      "Scaling / 效率"
+    ],
+    "reading": "值得读",
+    "summary": "仅据摘要，OptIDC将CTR模型输入侧的样本、特征及Embedding单元选择放入统一框架，避免三个层级独立筛选时互相冲突。方法进一步使用选择权重驱动的最优传输机制，对齐粗细粒度决策并保留各层语义，可接入不同CTR骨干；四个真实基准数据集上报告AUC优于已有输入选择方法。",
+    "why_read": "适合输入特征冗余、Embedding预算受限时参考。它把样本筛选与特征维度压缩联动，可帮助区分模型结构不够强和输入资源配置不合理两类瓶颈。",
+    "limitations": "摘要未提供AUC数值、最优传输训练代价、稀疏参数部署方式或线上效果。模型无关不代表接入没有成本，选择机制是否稳定也尚未核验。",
+    "experiment": "先在现有CTR模型上复现三个独立选择基线，再加入联动约束；控制训练时长和保留参数量，记录AUC、尾部样本表现与选择结果稳定性。",
+    "evidence_quote": "jointly learns sample, feature, and embedding-unit level configurations"
+  },
+  "3339f7dd37e80575288b2953f327b03a865a4cc3049e1e47d15cf73a453731b1": {
+    "score": 88,
+    "relevant": true,
+    "topics": [
+      "CTR / 精排",
+      "长序列建模",
+      "Scaling / 效率"
+    ],
+    "reading": "值得读",
+    "summary": "仅据摘要，HiRank把序列与非序列特征放入统一推荐骨干，通过门控序列注意力与异构交互实现双向信息融合，并依据有效秩差异组织更紧凑的高阶交互Token。场景感知聚合与不同投影用于减少多场景负迁移；工业数据上报告参数扩展表现改善，线上A/B测试报告人均订单增加2.27%。",
+    "why_read": "对长行为与非序列特征分开建模的精排架构有直接参考价值。有效秩提供了检查Token信息冗余的角度，可与现有长序列压缩和计算预算配置一起研究。",
+    "limitations": "仅见摘要，2.27%的实验周期、显著性与业务环境未知，不能外推为你的GMV收益；有效秩估计细节、线上时延及各模块独立贡献尚待全文核验。",
+    "experiment": "先离线测不同特征组的有效秩，再以相同FLOPs比较原分离架构、双向融合及紧凑Token版本，按业务场景分桶记录AUC、负迁移与p95时延。",
+    "evidence_quote": "Online A/B tests further show a 2.27% increase in orders per user."
+  },
+  "b149d2dfa0030fc7f2e2ba1daa9d3e02c5f44fe8260682c577491393c4de09a0": {
+    "score": 89,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "Semantic ID",
+      "召回与融合"
+    ],
+    "reading": "值得读",
+    "summary": "仅据摘要，Octen-WebGR以两Token语义标识生成目标网页，4B模型索引约2.01亿网页。在训练后一个月的导航流量上，新问法且历史曝光充足页面的Top-1为30.9%，同点击数据训练的Dense为17.2%。摘要强调Dense在低曝光页面仍占优势，生成式与向量检索分别在Query和页面侧泛化，适合互补融合。",
+    "why_read": "大规模索引、SID与曝光记忆的关系与你的GR+CF问题接近。最有价值的是按目标商品曝光程度分层，而非只看整体指标，检查GR泛化究竟发生在哪一侧。",
+    "limitations": "任务是寻找单个指定网页的导航搜索，不是个性化商品推荐。内存及准确率对比依赖具体索引和基线设置；模型与代码仅为摘要声称发布，本次未验证。",
+    "experiment": "按商品曝光量与请求是否见过构建二维评估桶，比较GR、Dense及CF融合，分别统计头部记忆、长尾召回、索引占用及候选解析开销。",
+    "evidence_quote": "the two approaches generalise on complementary sides, the query and the page."
+  },
+  "30a4d588768915825ae0896cbfe4507fd3f496054397474001ed103f43ae984b": {
+    "score": 84,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "训练与蒸馏"
+    ],
+    "reading": "值得读",
+    "summary": "仅据摘要，DPE-Rec面向无序商品组合补全，使用扩散语言模型生成缺失商品。方法以语义分叉感知GRPO改善解码顺序造成的多样性损失，再用伪轨迹蒸馏把学习集中到高质量解码访问的状态，支持更少去噪步数。摘要宣称平均性能提升63%、快速版本平均推理加速25.6倍，但指标及比较口径需全文确认。",
+    "why_read": "适合把MTP或并行解码扩展到组合推荐时参考，尤其可关注先决定语义分支还是细节Token，及减少解码轮数是否会牺牲商品集合多样性。",
+    "limitations": "对象是无序Bundle补全，不能直接当作顺序Next-item推荐结论。摘要中的平均提升和加速缺少基线、硬件及计时范围，未验证线上收益。",
+    "experiment": "在固定候选集合的组合补全任务中，对比置信度解码与分叉优先解码；控制去噪步数，联合统计集合Recall、多样性、重复率和真实端到端延迟。",
+    "evidence_quote": "semantic-fork-aware GRPO"
+  },
+  "74a331fa1a071152cd51ca45c7eeeee91c91ee6ccf4bc518506f29c8db873fe6": {
+    "score": 85,
+    "relevant": true,
+    "topics": [
+      "召回与融合",
+      "评估与仿真"
+    ],
+    "reading": "值得读",
+    "summary": "仅据摘要，本文从概率建模与参数估计出发重新设计商品相似度，推导基于Bernoulli和多项分布的两类度量，并用消融分析偏差、概率平滑、未知交互处理和分布选择的作用。作者还把常用余弦相似度解释为一个特定优化问题的解，为邻域协同过滤中的经验公式提供更清晰的假设与分析路径。",
+    "why_read": "当CF补充GR时，相似度公式、平滑和未观察行为的处理会直接影响补召回分布。本文适合与用户活跃度导致虚假相关的研究配套阅读。",
+    "limitations": "摘要没有给出各度量的具体公式、量化改善或线上验证。概率假设是否符合曝光偏置的数据需另行检查，理论解释也不自动保证推荐指标提升。",
+    "experiment": "固定邻居数和训练交互，比较现有共现、余弦与概率度量，单独消融热门度校正和平滑强度，按头尾商品统计邻居质量和GR补召回增量。",
+    "evidence_quote": "grounded in probabilistic modeling and parameter estimation."
+  },
+  "688defa1a28630b986b064183abb509fa923aa7b4830a1c082c91b7532091e88": {
+    "score": 90,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "Scaling / 效率",
+      "训练与蒸馏"
+    ],
+    "reading": "必读",
+    "summary": "仅据摘要，LoopGR通过重复使用共享生成Decoder与轻量上下文更新器增加有效计算深度，避免参数量随深度同比增长；再以递归轨迹自蒸馏同时对齐预测分布与演化方向，将高预算教师压到低预算学生。论文报告优于强生成推荐基线，相对代表性Encoder-Decoder在获得更好效果时模型规模最多减少52%。",
+    "why_read": "与你的推荐模型Scaling及低成本实验筛选相关，可把参数量与运行时计算深度拆开配置，再检验蒸馏能否保留深层推理的有效增益。",
+    "limitations": "模型规模减少不等于推理更快，共享模块反复执行仍有串行计算成本。摘要未给出相同延迟预算对比、线上指标或52%所对应的具体设置。",
+    "experiment": "在相同SID与数据下对比加宽模型、非共享加深及递归深度，分别固定参数和延迟预算；加入轨迹蒸馏后记录Recall、吞吐与深度收益曲线。",
+    "evidence_quote": "reducing model size by up to 52%"
+  },
+  "9c2e1a13ea7200d1d483073f703d83dddda3303eec540922cfa36679ddbc1380": {
+    "score": 90,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "CTR / 精排",
+      "评估与仿真"
+    ],
+    "reading": "必读",
+    "summary": "仅据摘要，DICE不再通过自由文本间接表达推荐结果，而是从给定候选中直接估计个性化选择分布与置信度。树状注意力在隔离候选分支间共享历史计算，使一次前向可完成候选打分；三个数据集上报告Top-1优于所测基线、候选重排不改变所测选择，并有最高约6倍的端到端加速及低置信度路由实验。",
+    "why_read": "与你的Decision Token和计算按需分配方向相近，但可先检查直接选择候选是否比生成商品文本更合适；置信度还能用于决定何时增加模型计算。",
+    "limitations": "这是给定候选的选择任务，不等于全库生成召回。候选集合大小、置信度校准方式、约6倍加速的参照和硬件未在摘要展开，不能直接外推。",
+    "experiment": "固定召回候选，对比现有文本输出与树状候选打分，重复打乱候选顺序，记录Top-1、校准误差、拒答覆盖曲线及不同候选数下的p95延迟。",
+    "evidence_quote": "Tree-structured attention shares history computation across isolated candidate branches"
+  },
+  "7a9f370145aec18e5d552dd85219c0d37f1d9c3f9416d68e20cc1708e599acaf": {
+    "score": 68,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "Scaling / 效率"
+    ],
+    "reading": "跳过",
+    "summary": "仅据摘要，dSpark研究扩散语言模型中何时提交Token，优先揭示能降低其余位置不确定性的Token，再把这类解掩码计划蒸馏进模型，并通过KL正则维持质量。作者在数学推理和代码任务上实验，报告GSM8K上针对两种模型及相应基线的加速；本次不把这些结果视为推荐任务证据。",
+    "why_read": "调度蒸馏对未来扩散推荐有潜在启发，但与你当前自回归SID及工业推荐的连接仍间接。已有更直接的推荐蒸馏论文时，不优先占用日报名额。",
+    "limitations": "实验证据来自通用语言生成，未涉及推荐、SID或商品检索；加速依赖具体解码基线。摘要声明有代码，本次未访问仓库或核验复现条件。",
+    "experiment": "若以后已有扩散推荐基线，再在相同生成轮数预算下比较置信度解掩码与影响导向调度，检查Recall、Token依赖和真实延迟，而非直接迁移数字。",
+    "evidence_quote": "learning when to commit tokens for faster diffusion language generation."
+  },
+  "391325f5b457cb3f4527466cbe35d9dab02cf8fffccd7bd76b679bac69d0b906": {
+    "score": 56,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "Scaling / 效率"
+    ],
+    "reading": "跳过",
+    "summary": "仅据摘要，EvoRouter为多Agent系统联合选择模型、协作方式、数量、轮次与技能，利用专家汇总执行轨迹中的性能成本反馈，再通过有特权信息的教师对路由器自身轨迹进行在策略蒸馏，并加入成本感知强化学习。论文在多域基准上报告准确率与计算成本改善，但任务不是推荐系统。",
+    "why_read": "成本感知路由有通用工程价值，但当前材料没有用户行为建模、SID生成或CTR实验证据，与个人主要研究方向关系较弱，暂不推荐精读。",
+    "limitations": "摘要的准确率和成本指标属于多Agent查询服务，不能转换为推荐精度或线上延迟收益；教师构建及反馈提取开销也未在摘要中完整量化。",
+    "experiment": "只有在明确开展推荐Agent协作路由时，再以简单固定路由为基线，计入专家反馈与教师调用总成本，比较任务成功率和单位有效结果成本。",
+    "evidence_quote": "Cost-aware reinforcement learning jointly optimizes task performance and computational cost."
+  },
+  "1dd9bfa9902e1ecc6b8f1a8dfae7d2098d90a188346f45638abfbc6f11ec564c": {
+    "score": 38,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "Scaling / 效率"
+    ],
+    "reading": "跳过",
+    "summary": "仅据摘要，DAC-Loop面向遥感场景分类的轻量CNN，交替使用结构化通道剪枝、非结构化稀疏化与剪枝前后知识蒸馏，改善高压缩率下的精度。作者在EuroSAT和NWPU-RESISC45上报告超过90%参数减少时仍能维持较好准确率，强调迭代压缩相对单次剪枝与单阶段恢复的优势。",
+    "why_read": "蒸馏与剪枝交替进行的思想较通用，但论文任务和网络均远离SID生成及推荐模型，没有足够直接的迁移证据，故不进入本期精选。",
+    "limitations": "仅有遥感图像分类证据，没有稀疏Embedding、推荐序列或在线吞吐实验。参数减少也不能保证硬件加速，非结构化稀疏的实现依赖未核验。",
+    "experiment": "若确需压缩推荐侧视觉CNN，可固定硬件与精度损失预算，比较结构化剪枝和迭代蒸馏恢复；同时测量实际吞吐，避免仅按参数量判断收益。",
+    "evidence_quote": "maintaining strong accuracy even beyond 90% parameter reduction."
+  },
+  "e17ad4ba52662fe542e2d30e627087b313b3cc5be65bf6cda04b17668b69a2c7": {
+    "score": 35,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "评估与仿真"
+    ],
+    "reading": "跳过",
+    "summary": "仅据摘要，本文独立研究TrigFlow连续时间一致性模型，在CIFAR-10复现部分少步生成结果，但在ImageNet-64存在差距，报告约5%的参数量差异，并提出分段条件化的多步一致性蒸馏扩展。研究重视训练稳定性、教师质量和未明确的架构细节，但实验集中在图像生成而非推荐。",
+    "why_read": "其复现审计与训练细节分析值得借鉴，不过本期有多篇直接针对推荐蒸馏与解码效率的研究，优先级明显更高，不把通用蒸馏关键词视为足够相关。",
+    "limitations": "图像FID与推荐Recall、线上效果不可互换。摘要未证明扩展方法适用于离散SID或推荐行为序列，也没有给出与推荐任务直接关联的实验。",
+    "experiment": "当前不建议专门复现；若以后研究连续扩散推荐，可先固定教师和参数统计方式，在小规模数据上验证训练稳定性，再判断是否值得引入多步扩展。",
+    "evidence_quote": "On ImageNet-64, they fall short"
+  },
+  "0283db088dd808767ebe6b4bfa711f431812aec5435cfef3d663ee60992e9659": {
+    "score": 78,
+    "relevant": true,
+    "topics": [
+      "召回与融合",
+      "评估与仿真"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，AgentMemRec将长期Agent记忆选择建模为有预算的列表推荐，把请求、记忆和上下文分别映射为用户、商品与列表，组合候选生成、学习排序和列表构建，选择时不调用LLM。作者在LongMemEval与LoCoMo上报告准确率及服务成本改善，并把收益归因于列表更常覆盖回答所需的完整证据。",
+    "why_read": "推荐级联与列表覆盖的思想清晰，适合需要研究多路证据召回或推荐Agent记忆时参考；但当前用户重点是商品GR与SID，迁移优先级低于直接方法论文。",
+    "limitations": "摘要中的无LLM调用指记忆写入或选择阶段，并不表示整个问答系统不使用LLM。任务是多会话问答，不是用户点击或购买推荐，成本口径待核验。",
+    "experiment": "若已有推荐Agent记忆模块，固定上下文预算，对比向量Top-K、重排与覆盖导向列表，评估全证据命中、回答正确率及包含写入成本的总开销。",
+    "evidence_quote": "formalize agent memory as budgeted slate recommendation"
+  },
+  "a738f9f05087b36d02b841140412c6d293013deb9aea4fa2948358bfb9f59ee3": {
+    "score": 91,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "Semantic ID",
+      "训练与蒸馏"
+    ],
+    "reading": "必读",
+    "summary": "仅据摘要，本文研究将序列推荐教师的商品分布迁移到并行SID预测。IDM由学生各码位概率重构全商品分布，再与教师对齐；CMM借助固定商品到码位映射，将教师商品概率投影成码位边缘分布。两者都保留并行预测，摘要分别报告平均Recall@10提升15.39%和NDCG@10提升8.28%，比较口径待全文核验。",
+    "why_read": "与你的并行SID、MTP及CF教师蒸馏直接相关。尤其适合对比商品级和码位级监督的差别，检查码位边缘分布改善是否足以恢复商品组合质量。",
+    "limitations": "并行预测假设与自回归前缀条件化不同；商品分布重构的全库成本、无效码组合及碰撞处理未在摘要展开。报告百分比不自动说明百分点或线上收益。",
+    "experiment": "固定SID映射与并行学生，对比硬标签、IDM、CMM及两者结合，记录Recall、NDCG、无效组合率、码位校准与计算内存开销。",
+    "evidence_quote": "predict all code positions simultaneously without autoregressive prefix conditioning."
+  },
+  "71ead23a7a8883df6e8da03b6b374dc32b65983a51dce2815dea9245662d12ef": {
+    "score": 95,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "Semantic ID",
+      "长序列建模"
+    ],
+    "reading": "必读",
+    "summary": "仅据摘要，Pinterest的PinGER保留SID输出，利用交错SID与Dense Token的非对称注意力，在训练各码位有监督的同时，线上以每商品一个Token读取历史；再用目标条件、强化学习和前缀多样性约束控制召回。Related Pins部署报告新鲜内容收藏提升3.60%、整体收藏提升0.62%，端到端延迟降低0.7%。",
+    "why_read": "与你的长行为序列、SID前缀多样性和GR线上成本高度相关。输入历史压缩与输出SID表达不必绑定，可优先研究训练服务等价的单商品Token输入。",
+    "limitations": "仅阅读摘要，注意力Mask具体形式、训练服务等价条件和各模块消融未知。0.7%是该业务端到端延迟变化，不能当作生成模型本身的大幅加速。",
+    "experiment": "固定模型和SID输出，对比历史多码Token与单Dense Token输入，校验训练服务输出一致性；再单独添加前缀多样性约束，测Recall、覆盖与p95延迟。",
+    "evidence_quote": "serves one token per item while computing the same function."
+  },
+  "7268cfbf703eb73d1789a32870ecddaab4e9bedfff9de1cdee9319d40520351b": {
+    "score": 77,
+    "relevant": true,
+    "topics": [
+      "长序列建模",
+      "召回与融合"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，BGAFlow面向跨域偏好差异，通过含LLM用户画像的双域预训练构建共享空间，再依据兴趣重合估计每个用户的迁移长度。条件Bezier曲线作为几何参考，残差流结合中间偏好反馈调整表示演化，并以推荐监督和轨迹正则约束迁移；多个真实数据集上报告优于基线，但未列具体数值。",
+    "why_read": "对跨业务域长序列迁移有一定启发，重点是按用户控制迁移程度。不过需要额外画像、流模型及轨迹训练，与你当前SID和解码问题的直接联系有限。",
+    "limitations": "摘要没有定量效果、训练时延、画像调用成本或线上证据；几何轨迹是否比简单门控适配更有必要尚不清楚，跨域负迁移控制也需分桶验证。",
+    "experiment": "先建立目标域单模型与轻量表示适配器，再比较兴趣重叠门控和完整流式迁移；固定数据和预算，按跨域活跃度统计收益及负迁移用户比例。",
+    "evidence_quote": "estimates a personalized horizon to determine the appropriate transfer extent for each user."
+  },
+  "3ed089b7c04cd11e7b6cb80d45018ea1fdb93128867567bb13046486a6ee2097": {
+    "score": 93,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "Semantic ID",
+      "Scaling / 效率"
+    ],
+    "reading": "必读",
+    "summary": "仅据摘要，Deco将历史理解与SID拼写解耦：大骨干以每商品一个融合Token读取行为，压成下一商品概念，再由带KV缓存的轻量Decoder完成受Trie约束的整段Beam Search。在七个数据集及生产式服务管线中，摘要报告50ms p95预算下吞吐为基线的3.2至8.6倍，且精度相当或更好。",
+    "why_read": "直接对应GR候选数、SID深度与大骨干推理成本的矛盾。可把昂贵用户理解只计算一次，轻量Decoder负责候选展开，并与当前Decision Token或用户兴趣压缩方案比较。",
+    "limitations": "生产式管线不是已验证的线上A/B收益。摘要未展开硬件、缓存和并发条件；概念瓶颈对长尾或多兴趣用户的影响，以及不同教师的公平比较尚待全文。",
+    "experiment": "固定骨干、SID与候选数，比较全骨干Beam与概念条件轻量Decoder，再扫Beam宽度；在相同50ms p95预算下记录Recall、吞吐和长尾覆盖。",
+    "evidence_quote": "a light KV-cached decoder conditioned on the concept and the generated prefix runs the entire beam search"
+  },
+  "c55124b8a0c91595522f9b17a3e8deaa0398b9d26d1c069f712012455a29977f": {
+    "score": 88,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "Semantic ID",
+      "Scaling / 效率"
+    ],
+    "reading": "值得读",
+    "summary": "仅据摘要，TGR-EvoDAG把生成推荐的Tokenization、预训练与对齐代码演化组织成DAG，用多分支与合并探索互补改进，并按阶段重训成本规划预算、主动进行下游适配，避免过早淘汰上游改动。摘要在腾讯工业场景报告离线Hit@1相对提升12.16%，线上CTR增加0.40%，另有公开数据和仿真实验。",
+    "why_read": "与你同时探索SID、模型结构和训练目标的实验管理相关，特别是上游改动需要下游适配后才能公平评价，不能仅凭未经适配的Proxy表现淘汰。",
+    "limitations": "代码自动演化复杂度高，摘要未给出GPU小时节省或失败实验成本。线上CTR的0.40%口径、显著性细节与实验周期需核验，仿真满意度不能替代线上效果。",
+    "experiment": "先不引入多Agent，手工维护SID与Decoder改动的实验DAG，为每次上游改动留出固定下游适配预算，比较与独立单点筛选的最终收益和GPU小时。",
+    "evidence_quote": "stage-aware cost planning to optimize GPU-hour budgets"
+  },
+  "e20c0be3002149c83a1b58f4ebafd1fd69e8a4aab0d6c75bcc402d22988ffd45": {
+    "score": 94,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "Semantic ID",
+      "召回与融合"
+    ],
+    "reading": "必读",
+    "summary": "仅据摘要，TCBSA把独立判别推荐器的商品分数差转换为共享SID边上的势能，并在Beam裁剪前通过置信门控修正累计路径分数，无需重训生成器或判别器。论文给出目标前缀存活的充分条件及低置信时的扰动界，在全库实验中报告跨模型收益，尤其关注新兴兴趣和目标路径存活。",
+    "why_read": "与你的GR+CF或token2tokenCF融合非常直接：完成列表后再融合无法挽救早期被裁掉的SID路径，因而值得把协同信号注入前缀选择，而非只用于最终排序。",
+    "limitations": "摘要没有具体增益、势能聚合的全库成本或线上指标。理论是充分条件而非无条件保证；判别分数校准、前缀热门度和低置信门控需结合你的系统验证。",
+    "experiment": "冻结GR与CF，对比末端列表融合、单纯加宽Beam及裁剪前势能修正，按新兴兴趣和长尾分桶测目标前缀存活、Recall与相同延迟预算下的候选质量。",
+    "evidence_quote": "uses a confidence gate to regulate their contributions to cumulative path scores before beam selection."
+  },
+  "f0398acec87c41f7442598bb5973d8bf28b27fa9dc8f29667dc4c8627dfb1107": {
+    "score": 62,
+    "relevant": true,
+    "topics": [
+      "召回与融合"
+    ],
+    "reading": "跳过",
+    "summary": "仅据摘要，SOAR面向兴趣点推荐，结合用户好友网络与文本评论，尤其利用评论情感判断地点与用户是否适配。作者在真实数据集上报告引入评论可以改善推荐Precision，关注社交关系、观点与行为偏好的联合建模，但摘要未披露模型结构、具体数据集或量化增益。",
+    "why_read": "如果业务具有可信社交关系和丰富评论，可作为社交推荐背景材料。当前缺少与你主要关注的SID、长序列、生成解码及工业扩展性的直接联系，暂不精选。",
+    "limitations": "摘要实验证据较弱，未提供具体数值、强基线、成本或线上验证；评论情感与真实偏好的关系也可能受曝光和社交选择偏差影响。",
+    "experiment": "仅在明确的地点推荐场景下尝试，在固定召回候选时分别加入好友特征和评论情感，并按评论稀疏度分桶，检查新增信号相对简单文本表示的收益。",
+    "evidence_quote": "incorporates both the user's friendship network and textual reviews"
+  },
+  "aa0c6dbcece01b5224003c20bb31dbc1910e99c6b9eca9ffcbea9b5168c41f80": {
+    "score": 71,
+    "relevant": false,
+    "topics": [
+      "Scaling / 效率",
+      "评估与仿真"
+    ],
+    "reading": "跳过",
+    "summary": "仅据摘要，本文研究Actor-Critic在Starpilot与Craftax中的强化学习Scaling Law，以小规模实验预测大训练的性能、资源配置和超参数。作者发现单Agent版本Elo比平均回报更易预测，验证范围覆盖最多两个数量级训练计算扩展，并讨论Craftax中计算最优模型规模的非单调变化及Ray干扰。",
+    "why_read": "对你用低成本Proxy筛选大规模实验的思路有间接价值，提醒预测指标选择会改变可预测性。但任务是游戏环境强化学习，缺乏推荐模型的直接证据。",
+    "limitations": "不能把游戏Elo的规律迁移成GR Recall或线上GMV规律；研究仅覆盖特定算法与两个环境，非单调现象也提示简单幂律外推可能失效。",
+    "experiment": "当前无需复现游戏实验；若研究推荐强化学习Scaling，可用已有小规模训练结果比较多种评估指标的外推误差，并以独立大规模实验检验排序稳定性。",
+    "evidence_quote": "up to two orders of magnitude in total training compute"
+  }
+}
