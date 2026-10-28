@@ -37,9 +37,9 @@
       "训练与蒸馏"
     ],
     "reading": "必读",
-    "summary": "仅据摘要，SLIDE把离线逐商品Beam Search得到的高质量候选按教师分数排序，将其SID拼接成列表蒸馏目标，训练学生以一条自回归轨迹、贪心解码生成Top-K列表。它试图同时缓解列表后部正样本监督稀缺与贪心搜索范围不足，在FORGE和淘宝搜索上报告质量改善，并用补充强化学习实验检验列表生成。",
+    "summary": "作者机构：浙江大学、阿里巴巴淘天集团（Taobao & Tmall Group of Alibaba）。\n仅据摘要，SLIDE把离线逐商品Beam Search得到的高质量候选按教师分数排序，将其SID拼接成列表蒸馏目标，训练学生以一条自回归轨迹、贪心解码生成Top-K列表。它试图同时缓解列表后部正样本监督稀缺与贪心搜索范围不足，在FORGE和淘宝搜索上报告质量改善，并用补充强化学习实验检验列表生成。",
     "why_read": "适合研究把昂贵搜索计算留在离线教师、在线用列表级学生承接的方案。与你的SID、MTP及低成本解码方向相关，尤其值得检查列表后部监督是否不足。",
-    "limitations": "摘要没有给出端到端延迟、重复商品率或线上效果。单条贪心轨迹仍会逐Token生成整个列表，不能把单次轨迹理解为只执行一次网络前向。",
+    "limitations": "摘要没有给出端到端延迟、重复商品率或线上效果。单条贪心轨迹仍会逐Token生成整个列表，不能把单次轨迹理解为只执行一次网络前向。 机构核验：对应v1论文PDF第1页署名，https://arxiv.org/pdf/2610.34764v1 。",
     "experiment": "固定教师与SID，比较逐商品Beam、硬标签列表模型及搜索列表蒸馏，分列表位置记录Recall、重复率、多样性和p95延迟，并控制总候选数。",
     "evidence_quote": "Their Semantic IDs (SIDs) are then concatenated in beam-score order to form list-wise distillation targets."
   },
@@ -344,5 +344,152 @@
     "limitations": "不能把游戏Elo的规律迁移成GR Recall或线上GMV规律；研究仅覆盖特定算法与两个环境，非单调现象也提示简单幂律外推可能失效。",
     "experiment": "当前无需复现游戏实验；若研究推荐强化学习Scaling，可用已有小规模训练结果比较多种评估指标的外推误差，并以独立大规模实验检验排序稳定性。",
     "evidence_quote": "up to two orders of magnitude in total training compute"
+  },
+  "de5739915ba2eb0cda284b95760710050d864d3bc27f6ef2ac9b00a640c40f2c": {
+    "score": 87,
+    "relevant": true,
+    "topics": [
+      "长序列建模",
+      "召回与融合",
+      "评估与仿真"
+    ],
+    "reading": "值得读",
+    "summary": "仅据摘要，BehaveRec组合短期因果序列、90天用户历史及基于行为向量相似性的用户图，通过用户级门控融合三路信号。作者发现长历史收益随交互丰富度上升，并提出约20次交互的部署参考阈值。但主要证据是类别级意图预测，全商品词表仅有一次初步实验且结果混合，不能直接套用到商品推荐。",
+    "why_read": "对你的长行为建模很有价值：先判断哪些用户值得增加历史与图信号，再分配计算，而非默认越长越好。类别级与商品级任务边界也是值得学习的评估细节。",
+    "limitations": "证据仅来自摘要，20次是特定设置的经验阈值，不是普适规则。工业数据规模不能替代商品级验证，长历史收益也可能依赖时间覆盖、行为质量和品类分布。",
+    "experiment": "按历史长度和时间跨度分桶，对比短序列、长历史和行为图三组，分别测类别及商品Recall；控制模型容量，并记录增益随推理成本的变化。",
+    "evidence_quote": "These headline results, and the resulting deployment threshold, are established for category-level intent prediction"
+  },
+  "df441274bcb071022d9df1e5f9b7ff6b42bc2efe0ddd6b6f1aff62a375abf492": {
+    "score": 90,
+    "relevant": true,
+    "topics": [
+      "长序列建模",
+      "召回与融合",
+      "Scaling / 效率"
+    ],
+    "reading": "必读",
+    "summary": "仅据摘要，RELAY让一个可学习Query同时承担用户语义读出和行为记忆路由：共享注意力选取历史与转移证据，再由候选条件门控校准两条记忆通道，使用统一全库似然训练并单次前向排序。六个数据集上报告Recall@5和NDCG@5均领先所测方法，预测器为204.4万参数，推理加速约1.75至1.79倍。",
+    "why_read": "与你的GR+CF融合思路相近，值得关注如何让语义兴趣与直接行为记忆共享历史选择，减少两路证据各自建模后无法协调的问题；不一定要增加复杂推理。",
+    "limitations": "摘要没有线上验证，预测器参数通常不等于整个系统参数，是否包含Embedding需全文核验。加速依赖具体基线和硬件；本方法不是SID自回归生成。",
+    "experiment": "在固定Embedding和候选规模下，对比语义Query、独立CF记忆、共享注意力及候选门控，分头尾商品测Recall、内存和端到端p95延迟。",
+    "evidence_quote": "A single learned query forms a semantic preference representation and reuses its attention to route direct-history and transition evidence into candidate scores."
+  },
+  "e120c1e7b9f3dccd59a2dfc216c02e014d139fcd781851e66dffba3435880320": {
+    "score": 94,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "Semantic ID",
+      "Scaling / 效率"
+    ],
+    "reading": "必读",
+    "summary": "作者机构：浙江大学。\n仅据摘要，JevRec针对所有商品采用固定SID长度的问题，借鉴自然语言中高频词更短的现象，为热门商品保留较短语义前缀，为长尾保留更丰富编码。方法用独立头预测长度分布，再以另一头生成长度条件内容，共享用户历史表示，以缓解两类目标的梯度冲突。三个公开数据集上报告效果改善，训练及推理时间低于TIGER。",
+    "why_read": "与你的SID层级、前缀分布和Decision Token方向直接相关。可把长度决策当作独立子任务，研究热门与长尾商品是否应采用不同编码预算，而非统一截短SID。",
+    "limitations": "仅摘要证据，未给出时延具体幅度、完整解码策略与线上指标。变长编码的唯一性、提前停止、前缀碰撞及长度校准条件需全文核验。 机构核验：对应v1论文PDF第1页署名，https://arxiv.org/pdf/2610.36937v1 。",
+    "experiment": "固定码本和骨干，对比固定长度、只做变长编码及独立长度头三组；分商品热度测Recall、路径碰撞、预测长度误差与相同延迟预算下的候选质量。",
+    "evidence_quote": "predicts a length distribution with a dedicated head and generates content conditioned on length through a separate head"
+  },
+  "fa2cf475bf1ca0ea29458ab9535ef8eb2f48fe7cbda6d519097208c55883c573": {
+    "score": 94,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "长序列建模",
+      "训练与蒸馏"
+    ],
+    "reading": "必读",
+    "summary": "作者机构：中国科学技术大学、美团、中国人民大学高瓴人工智能学院、香港理工大学、Academy of Cyber（按论文原文署名）。\n仅据摘要，Refiner在非文本ID推荐的生成式排序中引入潜在残差推理，用连续的加性修正逐步细化候选分数，而非在文本空间生成思维链。模型以压缩用户行为的历史Query支持候选相关推理，并通过LoRA参数高效适配预训练模型。作者在两个公开基准、工业离线数据和线上A/B中报告优于直接预测。",
+    "why_read": "与你的Decision Token、长历史压缩及推理计算分配接近。最值得研究的是额外步骤是否在修正候选排序错误，而非仅增加无目标的隐状态计算。",
+    "limitations": "仅摘要证据，线上指标、增幅、实验周期和额外时延未给出，不能假设GMV提升。LoRA减少训练参数不代表多步推理没有在线成本。 机构核验：对应v1论文PDF第1页署名，https://arxiv.org/pdf/2610.36890v1 。",
+    "experiment": "冻结同一预训练骨干，对比直接预测、单步及多步残差修正，按候选困难度测排序翻转质量；在相同p95预算下评估Recall或NDCG与步数收益。",
+    "evidence_quote": "a residual reasoning mechanism that progressively refines ranking scores through cumulative additive corrections"
+  },
+  "251e362c113629a7dc55903e3eaf9222c46e203855ff2b61b7a67d41c648f1fa": {
+    "score": 93,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "Semantic ID",
+      "评估与仿真"
+    ],
+    "reading": "必读",
+    "summary": "作者机构：中南大学、香港科技大学（广州）、香港理工大学、伦敦玛丽女王大学、微软。\n仅据摘要，API复用预训练稀疏自编码器中带语义注释的特征索引作为SID词汇，省去额外词表学习。PID同时保留特征索引与相对激活强度，SPA由用户历史联合预测两者，再通过商品级监督提升目标相对候选的得分。方法还用特征贡献解释候选分数差，报告跨骨干及解码方式的竞争性表现。",
+    "why_read": "与你的SID构建、冲突及语义区分问题直接相关。除离散索引外保留激活强度，提供了在紧凑Token预算下区分共享主特征商品的新思路，也便于诊断召回偏差。",
+    "limitations": "仅摘要证据，特征词表覆盖、预训练域偏移、量化细节与线上效果未知。词表可解释不等于推荐因果解释，取消词表训练也不代表整体训练零成本。 机构核验：对应v1论文PDF第1页署名，https://arxiv.org/pdf/2610.36763v1 。",
+    "experiment": "固定商品文本编码器和Token预算，对比原SID、只用特征索引及索引加强度，测碰撞率、长尾Recall及域外商品覆盖，再检查解释与分数变化是否一致。",
+    "evidence_quote": "feature indices to serve as a reusable SID vocabulary"
+  },
+  "61d2d6ab5b90b9d801d2a7b70f4d98f27975223f596cb964049786079dca60a5": {
+    "score": 89,
+    "relevant": true,
+    "topics": [
+      "召回与融合",
+      "训练与蒸馏",
+      "Scaling / 效率"
+    ],
+    "reading": "值得读",
+    "summary": "仅据摘要，论文在固定Embedding存储预算下比较小型全精度、蒸馏和高秩低比特方案，覆盖六个数据集的七个模型单元。300秩4比特分解只用教师13%的存储，在这些设置中保留约95%至103%的长尾Recall@20。研究还发现教师命中保留率会错排部分方案，强调应直接评估总长尾召回，而非只追求教师一致性。",
+    "why_read": "与你的CF长尾补召回、Embedding成本和蒸馏评估相关。相同字节预算下增加表示秩可能优于单纯提高精度，学生也可能命中教师遗漏的有效长尾商品。",
+    "limitations": "仅摘要证据，实验主要是矩阵分解及一个LightGCN单元，不能直接外推SID生成。高秩低比特方案每次评分算术量更高，存储节省不等于服务更快。",
+    "experiment": "固定每行存储字节，对比低维全精度、蒸馏及高维量化CF；同时测总长尾Recall、教师命中保留率、吞吐和量化误差，检查二者是否排序冲突。",
+    "evidence_quote": "Compressed recommenders should be judged by total tail recall, not teacher fidelity alone."
+  },
+  "5783177309604cd07c0527787c950596ad3bbaf411d3df3c2068fbf095728b5c": {
+    "score": 88,
+    "relevant": true,
+    "topics": [
+      "CTR / 精排",
+      "长序列建模",
+      "Scaling / 效率"
+    ],
+    "reading": "值得读",
+    "summary": "仅据摘要，HiRank把序列与非序列特征放入统一推荐骨干，通过门控序列注意力与异构交互实现双向信息融合，并依据有效秩差异组织更紧凑的高阶交互Token。场景感知聚合与不同投影用于减少多场景负迁移；工业数据上报告参数扩展表现改善，线上A/B测试报告人均订单增加2.27%。",
+    "why_read": "对长行为与非序列特征分开建模的精排架构有直接参考价值。有效秩提供了检查Token信息冗余的角度，可与现有长序列压缩和计算预算配置一起研究。",
+    "limitations": "仅见摘要，2.27%的实验周期、显著性与业务环境未知，不能外推为你的GMV收益；有效秩估计细节、线上时延及各模块独立贡献尚待全文核验。",
+    "experiment": "先离线测不同特征组的有效秩，再以相同FLOPs比较原分离架构、双向融合及紧凑Token版本，按业务场景分桶记录AUC、负迁移与p95时延。",
+    "evidence_quote": "Online A/B tests further show a 2.27% increase in orders per user."
+  },
+  "8cc28c64b3fbcdc7b37bda7fde44c69c62da9e1d68ec7d465a674bf4786916f5": {
+    "score": 25,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "评估与仿真"
+    ],
+    "reading": "跳过",
+    "summary": "仅据摘要，论文结合密码分析式权重方向提取与预测标签学习研究神经网络参数恢复，比较ReLU和Leaky ReLU的重建特性，并讨论使用梯度、隐藏激活和受害模型参数等特权信息的实验。作者强调预测结果高度一致不能证明网络参数被正确识别，实验集中在合成全连接网络与CIFAR-10。",
+    "why_read": "与推荐蒸馏仅有术语层面的交集，实际目标是网络参数重建而非SID、用户兴趣或推荐效果提升，不符合本期个人筛选重点。",
+    "limitations": "摘要的实验依赖不同程度的特权访问，与常规教师输出蒸馏假设不同；没有推荐任务、线上指标或可迁移效率收益，不能把重建一致率当推荐质量。",
+    "experiment": "当前不建议投入复现。若将来评估推荐模型蒸馏，应先明确可访问的教师信息，并分别记录任务效果与输出一致性，避免把一致当作参数或能力恢复。",
+    "evidence_quote": "prediction agreement does not identify network parameters."
+  },
+  "9a33aecb11564a5b7caedf2bec1ee76558c405e241b8ad005055621be4e91bbb": {
+    "score": 42,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "评估与仿真"
+    ],
+    "reading": "跳过",
+    "summary": "仅据摘要，SWE-Ladder把软件修复分为定位、复现和补丁三个阶段，为教师提供对应的已验证修复证据，再按阶段顺序进行自蒸馏并用GRPO优化完整轨迹。作者在两种软件Agent框架中报告SWE-bench通过率改善，反转蒸馏顺序会削弱效果，显示阶段匹配监督的重要性。",
+    "why_read": "阶段化教师信息可以启发复杂训练流程设计，但论文只验证代码修复Agent，与当前推荐SID、长序列或在线排序没有直接实验联系，因此暂不精选。",
+    "limitations": "仅摘要证据，软件测试通过率不能代替推荐指标；训练中教师使用参考修复等特权信息，不能简单照搬到没有相同监督来源的推荐系统。",
+    "experiment": "无需专门复现软件Agent。若用于推荐多阶段蒸馏，先明确各阶段可获得的教师证据，在固定训练预算下比较阶段匹配与统一目标，防止标签泄漏。",
+    "evidence_quote": "Neither provides stage-specific guidance for localization or reproduction."
+  },
+  "14c89d44c2f9f2b91215be7bd3d8218d1e90105bda9c5e4f694ee97ec9f1bfc9": {
+    "score": 57,
+    "relevant": false,
+    "topics": [
+      "Scaling / 效率",
+      "评估与仿真"
+    ],
+    "reading": "跳过",
+    "summary": "仅据摘要，论文以模型信息衡量扩散生成样本对特定训练数据的依赖，观察随模型与数据规模变化出现记忆到泛化的非线性过渡区，以及信息近线性变化的泛化区。作者提出信息论Scaling Law，并由其推导记忆和样本质量规律，报告在拟合域外仍能外推，但研究对象是扩散生成。",
+    "why_read": "记忆与泛化如何受规模影响值得关注，但缺少推荐任务与低成本实验排序验证。当前已有直接面向GR的扩展和蒸馏论文，优先级更高。",
+    "limitations": "仅摘要证据，扩散模型的模型信息与商品Recall、曝光记忆或线上GMV并不等价。估计量成本、训练域外外推范围及假设适用性仍待全文核验。",
+    "experiment": "若未来研究扩散推荐Scaling，可先在已有小模型上检查信息估计量与推荐指标的相关性，再决定是否值得为其单独扩大训练，不直接迁移幂律结论。",
+    "evidence_quote": "We explore its scaling behavior as model size and training dataset size vary."
   }
 }
