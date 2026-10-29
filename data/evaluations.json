@@ -202,18 +202,19 @@
     "evidence_quote": "maintaining strong accuracy even beyond 90% parameter reduction."
   },
   "e17ad4ba52662fe542e2d30e627087b313b3cc5be65bf6cda04b17668b69a2c7": {
-    "score": 35,
+    "score": 48,
     "relevant": false,
     "topics": [
       "训练与蒸馏",
+      "Scaling / 效率",
       "评估与仿真"
     ],
     "reading": "跳过",
-    "summary": "仅据摘要，本文独立研究TrigFlow连续时间一致性模型，在CIFAR-10复现部分少步生成结果，但在ImageNet-64存在差距，报告约5%的参数量差异，并提出分段条件化的多步一致性蒸馏扩展。研究重视训练稳定性、教师质量和未明确的架构细节，但实验集中在图像生成而非推荐。",
-    "why_read": "其复现审计与训练细节分析值得借鉴，不过本期有多篇直接针对推荐蒸馏与解码效率的研究，优先级明显更高，不把通用蒸馏关键词视为足够相关。",
-    "limitations": "图像FID与推荐Recall、线上效果不可互换。摘要未证明扩展方法适用于离散SID或推荐行为序列，也没有给出与推荐任务直接关联的实验。",
-    "experiment": "当前不建议专门复现；若以后研究连续扩散推荐，可先固定教师和参数统计方式，在小规模数据上验证训练稳定性，再判断是否值得引入多步扩展。",
-    "evidence_quote": "On ImageNet-64, they fall short"
+    "summary": "仅据摘要，论文独立复现实验检验连续时间一致性模型，在CIFAR-10重现一步与两步FID，但在ImageNet-64未达到原结果，并报告约5%参数量差异。作者进一步引入按固定区间调度的多步连续时间蒸馏，在不同步数下比较图像生成质量，提示教师与未明确的结构细节会影响复现。",
+    "why_read": "对蒸馏复现和成本核算有方法论价值，但研究对象是图像生成，并未验证推荐任务；当前可直接迁移的SID蒸馏与解码工作优先级更高。",
+    "limitations": "仅摘要证据，FID不是推荐质量指标，未核验代码或教师权重。原结果未复现的归因是作者经验判断，不能据此推断特定方法错误或推荐场景收益。",
+    "experiment": "无需投入图像训练。可借鉴其复现检查：对推荐蒸馏先核对教师质量、真实参数量、初始化和计时口径，再比较一步与多步学生的效果成本。",
+    "evidence_quote": "On ImageNet-64, they fall short, a gap that appears related to our teacher and to architectural choices the paper leaves unspecified."
   },
   "0283db088dd808767ebe6b4bfa711f431812aec5435cfef3d663ee60992e9659": {
     "score": 78,
@@ -491,5 +492,124 @@
     "limitations": "仅摘要证据，扩散模型的模型信息与商品Recall、曝光记忆或线上GMV并不等价。估计量成本、训练域外外推范围及假设适用性仍待全文核验。",
     "experiment": "若未来研究扩散推荐Scaling，可先在已有小模型上检查信息估计量与推荐指标的相关性，再决定是否值得为其单独扩大训练，不直接迁移幂律结论。",
     "evidence_quote": "We explore its scaling behavior as model size and training dataset size vary."
+  },
+  "fd7b61d0687b8ee4f6b48ab5031e744b6b7019a918f01eb782c8f162cfbc0dcf": {
+    "score": 95,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "Semantic ID",
+      "训练与蒸馏"
+    ],
+    "reading": "必读",
+    "summary": "作者机构：电子科技大学。\n仅据摘要，REGER把商品关系显式注入GR三个环节：用生成语义邻居SID进行预训练，用全局注意力与SID边界对齐的局部注意力编码历史，再把判别教师的商品偏好分解为前缀条件分布。在目标SID路径的真实前缀上，对所有合法下一Token蒸馏，并联合交叉熵训练。论文给出层次KL分解理论，真实数据实验报告稳定改善。",
+    "why_read": "与你的GR+CF、SID分层监督和token2tokenCF非常直接。值得区分语义邻居预训练、历史局部转移和前缀条件蒸馏三种信号，检查哪一种真正改善目标路径存活。",
+    "limitations": "仅摘要证据，增益数值、教师全库分布成本和线上收益未给出。蒸馏发生在真实目标前缀，不代表学生生成错误前缀时仍获得同样监督；理论分解也不保证有限训练收益。 机构核验：对应v1论文PDF第1页署名，https://arxiv.org/pdf/2610.37584v1 。",
+    "experiment": "冻结教师与SID，比较硬标签、商品级蒸馏及前缀条件蒸馏，逐层测KL、目标路径存活和Recall；随后单独加入语义邻居预训练，记录训练开销。",
+    "evidence_quote": "distill a discriminative teacher's full conditional distributions over all legal next tokens at ground-truth prefixes"
+  },
+  "fea2dc4579cc9647dbe7d6fa698761d14fef2ac7e0dbfffe93dbcd851f4fa018": {
+    "score": 94,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "Semantic ID",
+      "长序列建模"
+    ],
+    "reading": "必读",
+    "summary": "作者机构：重庆大学、格里菲斯大学。\n仅据摘要，LESSRec发现预测某层SID时，同层历史Token通常更有效，其他层可能干扰，因此分别编码各语义层历史，解码时只读取目标层。另一路按时间组织商品整体语义序列，经独立交叉注意力与同层上下文融合。LESSRec+以不同层的独立编码器、相同总参数量减少编码计算，在三个公开数据集与三种Tokenizer上报告效果及效率收益。",
+    "why_read": "与你的长历史压缩和SID层级预测直接相关。相比统一截短历史，可以先限制跨层读取，并保留商品级语义补偿，检查同层历史是否更值得占用注意力预算。",
+    "limitations": "仅摘要证据，同层信息更强是所测设置的观察，不能当作跨任务定律。参数相同不代表延迟相同；各层序列长度、额外商品语义分支成本和线上指标仍需全文核验。 机构核验：对应v1论文PDF第1页署名，https://arxiv.org/pdf/2610.37286v1 。",
+    "experiment": "保持总参数与SID不变，对比全层历史、仅同层历史及同层加商品语义双分支；逐层测预测准确率、Recall、显存和真实p95延迟，检查跨层依赖损失。",
+    "evidence_quote": "restricts attention over historical tokens to the sequence at the target token's semantic level during prediction."
+  },
+  "0079a30bc6763ba6565c6c60ef074105920201aadb752b2e892413ff25759b08": {
+    "score": 88,
+    "relevant": true,
+    "topics": [
+      "长序列建模",
+      "召回与融合",
+      "评估与仿真"
+    ],
+    "reading": "值得读",
+    "summary": "仅据摘要，COMPOTE针对同一历史可能有多种下一商品兴趣，训练多假设Transformer，目标从均匀监督逐步退火为赢家独占分配，促使不同假设专门化到不同商品区域。推理使用无需归一化的最大相似度规则；三个Amazon基准和相同容量消融显示收益主要来自退火目标，并讨论总体分布划分及排序性质。",
+    "why_read": "可为多兴趣召回及GR候选多样性提供训练目标参考。最有价值的是检查多头是否真的分工，而非仅通过增加容量提高指标，也适合诊断相似兴趣头坍缩。",
+    "limitations": "仅摘要证据，理论最优条件不能等同于有限数据训练必然有效。实验仅三个公开基准，未给数值与线上收益；没有直接验证SID路径或多路召回融合。",
+    "experiment": "固定总参数和召回候选数，比较单头、多头均匀监督、直接赢家分配及退火目标，联合记录Recall、头间重叠、长尾覆盖和不同随机种子的坍缩比例。",
+    "evidence_quote": "an annealed objective that transitions from uniform supervision to a winner-takes-all assignment."
+  },
+  "ad976946fa99095c6d3c738145b1751ab732a31fb40852263f9f017a25365562": {
+    "score": 95,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "Semantic ID",
+      "训练与蒸馏"
+    ],
+    "reading": "必读",
+    "summary": "作者机构：浙江大学、阿里巴巴集团。\n仅据摘要，KL-MOPD将点击与转化两个单目标教师蒸馏到GR学生，针对不同Token上难学教师不同的问题，在训练前一次性测量初始师生KL差异，并按差异分配逐Token教师权重。论文在温和条件下证明加性联合目标优于普通多目标蒸馏，并在三个公开基准、十亿规模工业数据和电商广告线上A/B中报告改善。",
+    "why_read": "与你的SID逐层预测和CTR/CVR多目标协调直接相关。商品最终损失可能掩盖某个中间Token对转化目标学习不足，逐Token权重校准是较容易加入现有蒸馏流程的实验。",
+    "limitations": "仅摘要证据，线上指标与提升幅度未披露，不能推断GMV收益。理论依赖条件和加性目标；初始KL是否能持续代表训练难度、教师质量及分布偏移影响仍需验证。 机构核验：对应v1论文PDF第1页署名，https://arxiv.org/pdf/2610.36973v1 。",
+    "experiment": "固定两个教师和学生，对比等权、商品级动态权重及初始KL逐Token权重；按SID层记录点击与转化Recall、教师KL和目标冲突，再核算校准成本。",
+    "evidence_quote": "allocates token-wise teacher weights proportional to the initial student-teacher token-wise KL divergences"
+  },
+  "5d23e0b7866d23d1c0be6c41bd2cc779b9cf2e949f757bb375027e1632e797fe": {
+    "score": 92,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "召回与融合",
+      "训练与蒸馏"
+    ],
+    "reading": "必读",
+    "summary": "仅据摘要，RPSD用掌握额外信息的教师重新评价学生当前生成，将师生逐Token置信差转换为细粒度奖励归因，缓解序列级奖励平均分配的问题。教师还读取相似用户行为，通过兼顾商品相似度与时间结构的最优传输比较轨迹，再用多样性选择保留互补证据，实验报告多个真实数据集上优于已有方法。",
+    "why_read": "与你的GR+CF和Token级训练信号直接相关。相似用户轨迹既可提供协同偏好，也可改变中间Token的信用分配，适合与只蒸馏最终商品分布的方案比较。",
+    "limitations": "仅摘要证据，未给数值、线上效果或最优传输成本。教师特权信息的时间可用性、检索轨迹泄漏控制、奖励尺度与训练稳定性需要核验，不能假定该信息可在线获得。",
+    "experiment": "先用严格时间截断的近邻用户轨迹，对比序列奖励、单用户教师逐Token归因及协同教师；测Recall、梯度稳定性、邻居多样性和每轮训练耗时。",
+    "evidence_quote": "the token-level confidence difference between the student and teacher reshapes the shared sequence-level advantage into token-specific credit."
+  },
+  "1a5a1dffd77a579b0233c1bf4fcf0aab27898f08ada5f4ffecbabd9085966cd0": {
+    "score": 93,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "Semantic ID",
+      "Scaling / 效率"
+    ],
+    "reading": "必读",
+    "summary": "作者机构：阿里巴巴淘天集团（Taobao & Tmall Group of Alibaba）。\n仅据摘要，PailitaoMMSearch从原始图片和自由指令直接生成商品SID，以可复用数据生产工具扩展训练数据，经持续预训练、混合推理预算SFT及统一RL支持多意图和不同资源场景。RL结合意图均衡与贴近多候选服务的Sample–Beam采样。系统部署于淘宝拍立淘，受控线上A/B报告商品浏览增17.90%、交易增27.04%、GMV增8.94%。",
+    "why_read": "与你的生成召回、推理预算和训练服务一致性高度相关。优先关注多候选采样与线上Beam服务的对齐，以及一个模型如何在不同成本约束下切换质量，而非只扩大参数。",
+    "limitations": "仅摘要证据，这些线上增幅属于多模态搜索整体系统，不能归因于某个模块，也不能套用个性化推荐。实验周期、流量划分、置信区间和成本拆分未展开。 机构核验：对应v1论文PDF第1页署名，https://arxiv.org/pdf/2610.36958v1 。",
+    "experiment": "先固定数据和骨干，比较普通采样与Sample–Beam训练，在同候选数和相同延迟预算下测Recall及意图覆盖；再独立扫描推理预算，避免混合多个变化。",
+    "evidence_quote": "The RL stage combines intent-balanced optimization and Sample--Beam rollouts aligned with multi-candidate serving."
+  },
+  "c7776f40854da5f93b3f9aa940074bace31af790f4c3bdbfdbded6a7e47ab6b0": {
+    "score": 89,
+    "relevant": true,
+    "topics": [
+      "CTR / 精排",
+      "长序列建模",
+      "Scaling / 效率"
+    ],
+    "reading": "值得读",
+    "summary": "仅据摘要，TRIP重新检查CTR模型的位置编码与行为交互粒度，将行为顺序的低秩分解编码和相对目标时间的粗细尺度编码结合。时间组内允许双向交互与掩码重建，组间保留因果次序，再压缩为组摘要以降低后续计算；四个公开基准上报告AUC相对最强基线最高改善4.45%。",
+    "why_read": "与你的长行为压缩和精排效率相关。可先复查复杂位置编码是否真比无位置编码有效，再探索时间组作为交互及压缩单位，避免只靠序列长度增加成本。",
+    "limitations": "仅摘要证据，4.45%是最高相对AUC增幅，不是百分点或平均收益。时间组划分、目标时间泄漏控制、真实时延和线上验证仍缺细节，不能直接外推。",
+    "experiment": "在现有CTR骨干上对比无位置编码、现有编码与秩加时间编码，再单独加入组内双向及组摘要；固定预算测AUC、Logloss、泄漏与p95延迟。",
+    "evidence_quote": "while preserving inter-group causal order."
+  },
+  "094505a6542ddef0216cd14747a86f6d4df3d93717e73ccf8b31738cc47f87cd": {
+    "score": 53,
+    "relevant": false,
+    "topics": [
+      "Scaling / 效率",
+      "评估与仿真"
+    ],
+    "reading": "跳过",
+    "summary": "仅据摘要，SynthAPI控制合成工具环境的工具、任务和数据库多样性，在458752个任务与849个不同规模训练模型上研究数据组成规律。作者提出预测工具Agent泛化的Scaling Law，认为预算增大时工具及数据库多样性比单纯增加任务更有效，较高数据复杂度也有帮助，并在四个基准中比较效果。",
+    "why_read": "数据多样性比样本量更重要的视角可启发推荐数据设计，但研究任务是工具调用Agent，缺少SID、用户序列或推荐指标验证，因此不列入最终精选。",
+    "limitations": "仅摘要证据，合成工具环境的泛化规律不能直接预测GR收益或Proxy排序。数据规模与组成的可控性在真实推荐中更弱，训练成本与适用范围也需另行核验。",
+    "experiment": "当前不建议专门复现。若已有推荐Scaling实验，可先固定样本数，比较商品、用户和时间覆盖的多样性与收益相关性，再决定是否值得增加合成数据。",
+    "evidence_quote": "scaling tool and database diversity becomes more effective than increasing the number of tasks"
   }
 }
