@@ -795,5 +795,222 @@
     "limitations": "仅摘要证据，理论结论依赖双主体模型和检测假设，不能当成现实法规或经营建议；摘要没有推荐任务、实验收益或可复用训练实现。",
     "experiment": "本期无需复现经济博弈。若关注推荐蒸馏成本，直接记录教师生成、学生训练和在线部署费用，比较同等Recall下的资源支出即可。",
     "evidence_quote": "We consider a setting with two players: an incumbent and a distilling competitor"
+  },
+  "c9e716a6dc59fe1a92d1ca6808f3b54de3f27625d055e1077289fe9e7514fc0e": {
+    "score": 95,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "Semantic ID",
+      "训练与蒸馏"
+    ],
+    "reading": "必读",
+    "summary": "作者机构：北京邮电大学、快手科技。\n仅据摘要，RoFiGR在SID构建和生成中同时加入协同信号：将前两层累计码向量对齐冻结商品协同向量，在历史序列显式编码商品距离与来源层级，再由序列教师监督合法分支。固定粗层权重维持路由监督，有界自适应残差按师生需求追加权重。三个公开数据集上报告排序改善，并以五种随机种子配对检验及Holm校正支持主要NDCG收益。",
+    "why_read": "与你的GR+CF、SID前缀路由与逐层蒸馏高度相关。可以把码本协同对齐和生成阶段监督分开验证，避免只改善末端排序却无法挽救早期被剪掉的目标路径。",
+    "limitations": "仅摘要证据，没有线上或具体增益幅度。双树构造、合法分支分布获取成本与融合细节需全文核验；统计显著不代表商业收益或跨域稳定性。 机构核验：对应v1论文PDF第1页署名，https://arxiv.org/pdf/2610.39470v1 。",
+    "experiment": "固定Tokenizer和教师，比较原SID、前两层协同对齐、固定层权重及自适应残差；逐层测目标路径存活、前缀分布、Recall，并控制候选数和训练预算。",
+    "evidence_quote": "Fixed coarse-level weights maintain routing supervision, while a bounded adaptive residual allocates additional weight according to teacher-student demand."
+  },
+  "18a114a8dc1dd7083eff908b8188547aec652e502a6f2adf54b514e7fca96336": {
+    "score": 96,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "长序列建模",
+      "Scaling / 效率"
+    ],
+    "reading": "必读",
+    "summary": "作者机构：阿里巴巴国际数字商业集团、浙江大学。\n仅据摘要，PFA观察到GR解码注意力逐步聚焦且后续Token重要性排序较稳定，因此首步保留全历史注意力，再跨Beam加权汇总重要性，将选中KV重排为连续内存。后续步骤复用排序，按几何规律减少Token预算，降低反复选择和不连续访存成本。两项公开基准与工业数据报告改善，七天电商广告线上A/B也报告业务收益和较低时延。",
+    "why_read": "直接对应长行为GR的Beam解码瓶颈。相比每步重新Top-K，复用跨步排序并整理KV布局更贴近实际服务成本，可与现有静态压缩和稀疏注意力方案比较。",
+    "limitations": "仅摘要证据，未给线上收益、时延或硬件数值，不能推断GMV增幅。排名稳定性可能随SID层和用户兴趣变化，跨Beam聚合也可能丢失少数分支需要的证据。 机构核验：对应v1论文PDF第1页署名，https://arxiv.org/pdf/2610.39273v1 。",
+    "experiment": "固定模型、历史和候选数，对比全注意力、每步Top-K及PFA式一次排序加预算递减；联合测Recall、分支证据遗漏、KV重排开销和端到端p95延迟。",
+    "evidence_quote": "reorders the key-value cache of the selected tokens into a contiguous memory layout."
+  },
+  "4b8be7268ab220b13074732ec673c7b32fd8db417505445261d320069fab35a6": {
+    "score": 72,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "评估与仿真"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，MTA-OPSD认为同一回答的不同Token也需要不同教师，因此构造不同特权参考暴露方式的教师池，经多数投票和KL选择为每个Token挑选监督。作者在教师干预试验中观察到Token间偏好差异，并在Qwen3数学推理任务上报告优于已有自蒸馏方法，说明统一教师可能无法覆盖所有位置的训练需求。",
+    "why_read": "逐Token教师选择可类比SID层级监督，但摘要只验证数学推理。近期已有直接处理推荐多目标与前缀分布的蒸馏论文，当前迁移优先级低于那些工作。",
+    "limitations": "仅摘要证据，平均最高加5.9的指标口径与教师池成本需全文核验。参考答案特权在推荐中没有天然对应，未验证SID、召回或线上指标；代码链接也未访问。",
+    "experiment": "若现有多教师推荐蒸馏出现冲突，先在固定验证集记录各SID位的教师分歧，对比等权与按位置选择；控制教师调用数并检查选择是否引入标签泄漏。",
+    "evidence_quote": "enables every token to adaptively select its preferred teacher during training."
+  },
+  "64edb062e906fffe735d173f7beaa149fb17cd88c92e9e36f0452d982612f524": {
+    "score": 10,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "评估与仿真"
+    ],
+    "reading": "跳过",
+    "summary": "仅据摘要，SMD面向精准农业土壤湿度估计，用单模态教师指导多模态学生，融合气象、土壤及视觉信息。作者比较土壤图像与作物图像，发现后者提供更有效的视觉线索，并报告两类图像设置的MAPE优于基线。研究希望降低高分辨率视觉信息的处理负担，但任务是连续湿度预测。",
+    "why_read": "与推荐系统只有多模态蒸馏术语上的联系，不涉及商品SID、用户历史、召回或精排，也没有可直接映射到当前推荐实验的证据，因此跳过。",
+    "limitations": "仅摘要证据，MAPE改善不是推荐质量或服务效率；2%与1.2%的绝对相对口径未展开。没有资源计时，不能把多模态指导自动解释为推理更便宜。",
+    "experiment": "本期不投入复现农业任务。若需要推荐多模态蒸馏，应在相同教师和学生预算下直接比较文本、图片及融合监督，以推荐Recall和真实成本决定取舍。",
+    "evidence_quote": "a Knowledge Distillation (KD)-based multimodal learning framework"
+  },
+  "2058dad159158447ca83a698d3121cc7a42e59e982108f26216cb5380ba34f6c": {
+    "score": 88,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "召回与融合",
+      "训练与蒸馏"
+    ],
+    "reading": "值得读",
+    "summary": "仅据摘要，R2QRec在没有查询标注时固定检索器和商品索引，先验证生成表达能否召回已观察商品，并以通过验证的表达作SFT目标；再按多查询融合列表中目标商品的对数排名优化生成策略，用KL约束相对监督模型的变化。三项公开数据集报告整体推荐改善，并测试跨生成器与跨域泛化。",
+    "why_read": "与你的多路召回融合和训练目标一致性相关。查询不仅要单独召回目标，还应在融合后的真实列表中获得好排名，对数排名也能给截断线外候选提供区分信号。",
+    "limitations": "仅摘要证据，没有线上结果或具体增幅。固定检索器的误差会影响监督筛选，多查询成本与融合方式未展开；这不是直接生成SID的全库检索框架。",
+    "experiment": "固定现有召回索引，对比只用查询SFT、单查询排名奖励和融合列表奖励；测目标Recall、查询重复度、长尾覆盖及每请求检索次数，控制总候选预算。",
+    "evidence_quote": "Only the query generator is trained; the retriever and item index remain fixed"
+  },
+  "91bbfe18f2454d28bb6e7f0e342c1c7d49dd7c2c2320de3f6ba56f035dc94a1a": {
+    "score": 52,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "评估与仿真"
+    ],
+    "reading": "跳过",
+    "summary": "仅据摘要，sDMD从Wasserstein梯度流理解扩散分布匹配蒸馏，在积分KL之外加入批次估计的Sinkhorn修正，试图改善低教师密度区的指导和模式覆盖。为避免扰动原本可靠样本，方法依判别器输出选择性激活修正；图像与视频生成模型在二到四步采样下报告质量及多样性改善。",
+    "why_read": "对反向KL的模式集中和自适应蒸馏有方法启发，但实验是图像视频生成，没有推荐或SID验证，不能直接迁移其分布几何与评价结论。",
+    "limitations": "仅摘要证据，批次最优传输估计成本和训练稳定性未给数值。图像多样性指标与商品长尾覆盖不同，少步采样优势也不代表生成推荐的端到端加速。",
+    "experiment": "暂不复现视觉模型。若推荐蒸馏出现头部集中，先比较不同KL方向对长尾Recall和教师覆盖的影响，再决定是否需要额外最优传输修正。",
+    "evidence_quote": "adaptively activates the Sinkhorn correction based on discriminator outputs"
+  },
+  "ddd8c7c45c6cd03d441005664676bfef5ba2cd9aae84ae84d1f67886bd40193d": {
+    "score": 68,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "Scaling / 效率"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，Turing后训练把多个专家教师的局部Top-K分布通过教师损失归一化和裁剪进行在线蒸馏，并结合有界派发、路由重放和采样训练异步重叠。Turing-20B-A2B在数学代码等任务上保持专家收益，PPU配置中整合步骤时间从398.7秒降至139.3秒；作者明确加速属于完整训练与执行组合。",
+    "why_read": "多教师校准及训练系统重叠可参考，但任务未包含推荐验证。若当前只有单一推荐教师或小规模学生，引入动态MoE和定制执行路径的投入可能较高。",
+    "limitations": "仅摘要证据，2.86倍依赖特定PPU配置，不能当作线上推理加速。归一化整合分数不是推荐指标，裁剪、校准与系统重叠的独立收益需结合消融核验。",
+    "experiment": "如已有多教师推荐蒸馏，可先固定Top-K和轨迹比较损失归一化与裁剪，测各目标Recall及训练稳定性；系统异步优化应单独计时，避免混合归因。",
+    "evidence_quote": "reflecting the complete training and execution framework rather than any single component."
+  },
+  "09eb1832d336b5ea42ed3d40d101c4c53739b3e2540d0a4dbac3dea892169157": {
+    "score": 48,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "Scaling / 效率"
+    ],
+    "reading": "跳过",
+    "summary": "仅据摘要，ROAD用一个对抗目标和轻量表示空间判别器，将文本生成图像的多步扩散教师压成单步学生。方法采用受Lipschitz约束、含文本Token条件的Transformer判别头，周期性重采样随机特征混合，并用完整输入到Logit的Jacobian惩罚稳定训练，在COCO-10K报告FID优于所比较多步教师。",
+    "why_read": "单步蒸馏与判别器稳定化提供通用思路，但实验对象与商品推荐相距较远。当前已有明确验证SID蒸馏和解码效率的工作，因此不精选。",
+    "limitations": "仅摘要证据，FID和生成训练算力不能直接对应Recall或线上成本。单步图像采样不代表一次前向能生成推荐列表，随机混合退化解释也只限所测配置。",
+    "experiment": "不建议专门复现扩散图像模型。若推荐中使用对抗蒸馏，可先监控判别器梯度、长期收益和随机特征敏感性，验证问题存在后再增加约束。",
+    "evidence_quote": "a one-stage framework that distills text-to-image models with one adversarial objective"
+  },
+  "7a2a2010ccb4565b520fb17004968d44a11c1956f1849f7944a99c4a38a05b45": {
+    "score": 84,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "召回与融合",
+      "CTR / 精排"
+    ],
+    "reading": "值得读",
+    "summary": "仅据摘要，ANCHOR先估计类别层移动意图，再用类别锚点、历史访问记忆和用户偏好构造候选，最后由历史感知重排器结合上下文选择下一地点。它针对地点ID自然语言语义弱且长尾分布明显的问题，把语义意图与具体实体落地分开，在三个真实签到数据集上报告效果及候选覆盖和推理效率的较好权衡。",
+    "why_read": "语义意图先行、协同与访问记忆补充实体召回，与你的GR+CF融合有共通点。可关注候选覆盖究竟由语义分支还是行为记忆提供，帮助定位长尾遗漏。",
+    "limitations": "仅摘要证据，没有具体数值或线上收益。地点预测强依赖地理与时间约束，类别锚点的优势不能直接等同电商SID前缀收益；候选生成及重排开销也需核验。",
+    "experiment": "在既有候选召回上比较直接商品生成、类别意图检索及加入行为记忆三组；分头尾商品测覆盖与重排Recall，并记录语义落地失败率及总延迟。",
+    "evidence_quote": "category anchors, historical visit memory, and user preferences."
+  },
+  "47e60972b095faabe180e27bad0f13dfb4a7c61fc23c9cac2e95ab556fd3b628": {
+    "score": 62,
+    "relevant": false,
+    "topics": [
+      "Scaling / 效率",
+      "评估与仿真"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，论文分析MoE Softmax路由集中、专家被抑制和恢复过程，分别研究固定专家及可训练专家的理想模型，并在额外条件下得到对数或幂律恢复时间。作者把神经更新关联到离散Log-Odds越阈值，在配对Transformer-MoE训练中移除一种路由梯度对比，观察到恢复延迟和累计优势下降。",
+    "why_read": "路由坍缩可能类比SID前缀负载不均，但专家竞争和固定商品码分配机制不同。缺少推荐任务，不应只因Softmax或路由词汇相似就直接套用结论。",
+    "limitations": "仅摘要证据，恢复速度定理依赖特定损失和路径幂界条件，不能保证任意网络都能恢复。实验没有Recall、商品覆盖或在线指标，生产MoE成本也未展开。",
+    "experiment": "若已有推荐MoE，可先记录专家负载、低概率恢复时间和路由梯度；在控制容量条件下做轻量对照，验证实际存在相似动态后再研究理论适用性。",
+    "evidence_quote": "separates complementary-expert covariance from relative gradient advantage."
+  },
+  "f8ace832de6bf0fbec7fe2be09cdacb3c8e3ddb942007dfbafb0d656e0d0fc99": {
+    "score": 94,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "CTR / 精排",
+      "训练与蒸馏"
+    ],
+    "reading": "必读",
+    "summary": "作者机构：阿里巴巴集团。\n仅据摘要，UGR在请求级约千个自然内容、广告及其他业务候选上自回归生成混排列表，以加权SFT和排列偏好优化利用曝光后反馈。训练时广告去偏塔建模历史曝光影响，服务时接入当前广告价值并保持原分配及GSP定价规则；生成多价值列表后仍由下游评估器选择。淘宝猜你喜欢线上A/B报告核心IPV增1.76%、交易量增3.29%、GMV增2.10%。",
+    "why_read": "可用于研究GR从召回向列表排序扩展，以及用户价值和商业价值的统一监督。尤其值得注意反馈来自曝光后行为，目标应与最终列表选择机制一致。",
+    "limitations": "仅摘要证据，这是请求候选集上的混排，不是全商品库直接生成，也未替代原有拍卖和末端评估器。线上数值属于整体系统，实验周期及单模块因果贡献需全文核验。 机构核验：对应v1论文PDF第1页署名，https://arxiv.org/pdf/2610.39426v1 。",
+    "experiment": "固定候选及末端评估器，对比曝光序列模仿、加权SFT及排列偏好目标；按业务分桶测NDCG、广告校准、列表多样性和价值代理指标，再检查服务延迟。",
+    "evidence_quote": "while preserving the existing allocation and GSP pricing rules."
+  },
+  "0baa1151793ad8c05db4e71ca9d6c50261e060843f2d10e3b13f43c9b41d3616": {
+    "score": 91,
+    "relevant": true,
+    "topics": [
+      "Scaling / 效率",
+      "评估与仿真",
+      "训练与蒸馏"
+    ],
+    "reading": "必读",
+    "summary": "仅据摘要，RecRSI让LLM根据当前推荐模型诊断提出多组训练配方改动，每个候选先运行完整训练的起始若干步，用留出探针用户的全排序NDCG@10决定哪组继续完整训练。论文强调不同损失和采样器的训练Loss不可直接比较；两类序列模型与三个数据集上，在相同完整重训次数下优于已有自改进Agent。",
+    "why_read": "与你的低成本实验筛选非常接近。重点是用短训练后的真实全排序指标筛选，而非比较不同训练目标的Loss；无需先引入自动写代码也能借鉴验证方法。",
+    "limitations": "仅摘要证据，相同完整重训次数不等于相同总GPU小时，所有短试验开销需计入。探针用户过拟合、试验排名随规模变化及工业数据适用性仍待验证。",
+    "experiment": "用已有五到十组完整实验回放前若干训练检查点，比较探针全排序NDCG与最终收益的Spearman相关、方向一致率和Top-K命中率，并核算全部短试验成本。",
+    "evidence_quote": "scored by full-ranking NDCG@10 on held-out probe users."
+  },
+  "144dd5cfc0fb0f9df603ceba03868e66b60a7b6c84c629fd14399b132f3dfe8b": {
+    "score": 82,
+    "relevant": true,
+    "topics": [
+      "召回与融合",
+      "评估与仿真"
+    ],
+    "reading": "值得读",
+    "summary": "仅据摘要，FedRecAgent在保留本地历史和个人记忆的同时共享自然语言经验，不更新LLM参数。方法把经验组织成条件、转移与理由单元，按条件和转移层次合并相似解释、区分不同选择理由；本地语义记忆与决策记忆指导共享知识检索。三个领域的稠密及稀疏设置中报告优于联邦和LLM推荐基线。",
+    "why_read": "适合关注多用户经验共享和冷启动时参考，但你的重点是SID与长行为模型，语言Agent协作的直接迁移程度较低。条件相似不代表决策相同的区分仍值得借鉴。",
+    "limitations": "仅摘要证据，本地保存历史不自动保证共享理由无隐私泄露；没有正式隐私保证或线上成本数值。不更新参数也不代表检索、记忆整合和LLM推理无成本。",
+    "experiment": "如探索本地用户记忆，可先固定模型比较只用本地记忆、无结构共享理由及条件转移分层检索，测Recall、理由冲突及共享内容的信息泄露风险。",
+    "evidence_quote": "local agents collaborate through natural-language knowledge while keeping interaction histories and personal memories local."
+  },
+  "41dfc6fcb97d2273628190cfd66f4bef3a9b41eaef1013a899e696eb2e981c72": {
+    "score": 95,
+    "relevant": true,
+    "topics": [
+      "长序列建模",
+      "CTR / 精排",
+      "Scaling / 效率"
+    ],
+    "reading": "必读",
+    "summary": "作者机构：Meta（Meta MRS、Facebook Discovery，按论文署名）。\n仅据摘要，LWR将长历史证据放入可反复读取的持久存储，只让固定大小的候选局部潜在工作区逐层传播。每层根据演化状态重读证据并保存紧凑交互后状态，使历史长度和推理深度独立扩展。在一万历史下，相对HSTU报告NE改善0.19%、每请求前向GFLOPs减少69.6%，并在两个十亿规模排序场景优于所比较基线。",
+    "why_read": "与你的长行为压缩、Decision Token和计算按需分配高度相关。固定传播状态又允许逐层回看原始证据，可能避免一次筛选永久遗漏重要历史的局限。",
+    "limitations": "仅摘要证据，GFLOPs节省不等于实际延迟或成本同比下降，NE改善也不是GMV收益。历史读取带宽、证据存储及最优深度的具体条件尚未核验，摘要未给线上A/B。 机构核验：对应v1论文PDF第1页署名，https://arxiv.org/pdf/2610.39188v1 。",
+    "experiment": "在相同历史和候选上比较全序列传播、一次Top-K选择和固定工作区逐层重读；分别固定参数、FLOPs及p95预算，测NE、显存带宽和不同用户历史桶的收益。",
+    "evidence_quote": "allowing history length and reasoning depth to grow independently."
+  },
+  "58c90b6b24ee430ca45cf112142e2c41f5a87b77405d117cb3e206b3fe0595d9": {
+    "score": 75,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "评估与仿真"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，论文把在线蒸馏知识区分为选择哪些候选Token与在哪些位置保留分支，并用逐步下一Token熵序列刻画后者，提出师生熵形状相关ESC。作者在保持教师Token偏好时干预熵，观察分支位置对收益的独立影响，并建立教师选择评估协议，训练前ESC在两名学生上优于已有预测指标。",
+    "why_read": "对SID不同层的不确定性和教师选择有启发，也与低成本筛选相近。但摘要未提供推荐实验，不能据此将ESC直接当成GR蒸馏收益预测器。",
+    "limitations": "仅摘要证据，两名学生的教师选择结果外推有限；熵估计、长度对齐与干预条件需全文。实验未证明可预测商品Recall、长尾覆盖或线上效果，代码也未验证。",
+    "experiment": "可在已有GR师生上先离线计算同一批真实与学生前缀的熵形状，检查其与已知蒸馏收益相关性；固定Tokenizer与温度，避免熵差仅反映码本规模。",
+    "evidence_quote": "where to keep reasoning paths open."
   }
 }
