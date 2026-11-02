@@ -87,33 +87,34 @@
     "evidence_quote": "Online A/B tests further show a 2.27% increase in orders per user."
   },
   "b149d2dfa0030fc7f2e2ba1daa9d3e02c5f44fe8260682c577491393c4de09a0": {
-    "score": 89,
+    "score": 90,
     "relevant": true,
     "topics": [
       "生成式推荐",
       "Semantic ID",
-      "召回与融合"
+      "Scaling / 效率"
     ],
-    "reading": "值得读",
-    "summary": "仅据摘要，Octen-WebGR以两Token语义标识生成目标网页，4B模型索引约2.01亿网页。在训练后一个月的导航流量上，新问法且历史曝光充足页面的Top-1为30.9%，同点击数据训练的Dense为17.2%。摘要强调Dense在低曝光页面仍占优势，生成式与向量检索分别在Query和页面侧泛化，适合互补融合。",
-    "why_read": "大规模索引、SID与曝光记忆的关系与你的GR+CF问题接近。最有价值的是按目标商品曝光程度分层，而非只看整体指标，检查GR泛化究竟发生在哪一侧。",
-    "limitations": "任务是寻找单个指定网页的导航搜索，不是个性化商品推荐。内存及准确率对比依赖具体索引和基线设置；模型与代码仅为摘要声称发布，本次未验证。",
-    "experiment": "按商品曝光量与请求是否见过构建二维评估桶，比较GR、Dense及CF融合，分别统计头部记忆、长尾召回、索引占用及候选解析开销。",
+    "reading": "必读",
+    "summary": "作者机构：未核实。\n仅据摘要，Octen-WebGR用受真实URL表约束的两词元语义ID做导航检索，4B模型索引2.01亿网页。在训练次月真实流量上总体Top-1为59.6%，点击先验增强的稠密检索为46.5%。对熟悉网页的新查询生成检索更强，对罕见网页稠密检索仍占优；缩放实验指出网页曝光量可能比容量更限制效果。",
+    "why_read": "虽是网页导航搜索，其两词元ID、亿级目录与曝光受限的分析对SID生成召回有直接借鉴价值；尤其适合检查GR与稠密召回分别覆盖查询和商品哪一侧的泛化。",
+    "limitations": "仅摘要证据，导航Top-1不能等同个性化推荐或GMV。10GB模型内存与412GB精确稠密检索的口径不代表全系统成本，未核验代码；低曝光网页仍是短板。 机构核验：v1 PDF首页仅见作者姓名、联系邮箱和项目链接；官网首页及博客未见该论文明确机构声明，未据邮箱域名推断（https://arxiv.org/pdf/2610.35256v1；https://octen.ai/blog）。",
+    "experiment": "在固定点击日志上按查询新旧和商品曝光量交叉分桶，对比两词元GR、稠密及融合召回；同时统计合法ID率、长尾覆盖、词表开销和完整服务内存。",
     "evidence_quote": "the two approaches generalise on complementary sides, the query and the page."
   },
   "30a4d588768915825ae0896cbfe4507fd3f496054397474001ed103f43ae984b": {
-    "score": 84,
+    "score": 91,
     "relevant": true,
     "topics": [
       "生成式推荐",
-      "训练与蒸馏"
+      "训练与蒸馏",
+      "Scaling / 效率"
     ],
-    "reading": "值得读",
-    "summary": "仅据摘要，DPE-Rec面向无序商品组合补全，使用扩散语言模型生成缺失商品。方法以语义分叉感知GRPO改善解码顺序造成的多样性损失，再用伪轨迹蒸馏把学习集中到高质量解码访问的状态，支持更少去噪步数。摘要宣称平均性能提升63%、快速版本平均推理加速25.6倍，但指标及比较口径需全文确认。",
-    "why_read": "适合把MTP或并行解码扩展到组合推荐时参考，尤其可关注先决定语义分支还是细节Token，及减少解码轮数是否会牺牲商品集合多样性。",
-    "limitations": "对象是无序Bundle补全，不能直接当作顺序Next-item推荐结论。摘要中的平均提升和加速缺少基线、硬件及计时范围，未验证线上收益。",
-    "experiment": "在固定候选集合的组合补全任务中，对比置信度解码与分叉优先解码；控制去噪步数，联合统计集合Recall、多样性、重复率和真实端到端延迟。",
-    "evidence_quote": "semantic-fork-aware GRPO"
+    "reading": "必读",
+    "summary": "作者机构：亚利桑那州立大学、史蒂文斯理工学院。\n仅据摘要，DPE-Rec针对无序组合补全中扩散解码多样性不足和多词元加速损质的问题，以语义分叉感知GRPO优先训练分叉决策，并用伪轨迹蒸馏聚焦高质量解码访问的子空间，支持更少步的多词元生成。多个组合构建基准报告平均推荐性能提升63%，快速版本报告平均25.6倍推理加速且质量损失较小。",
+    "why_read": "与你的多词元预测和生成效率相关：关键是让训练覆盖真实解码轨迹，并区分语义分叉与细化决策；无序多商品生成也比直接照搬自回归顺序更值得单独检验。",
+    "limitations": "仅摘要证据，63%的具体指标与汇总口径未展开，25.6倍依赖所比系统及硬件，不能保证工业端到端加速。任务是组合补全，不能直接套用下一商品排序或线上收益。 机构核验：arXiv v1 PDF首页署名（https://arxiv.org/pdf/2610.34700v1）。",
+    "experiment": "在小型组合补全任务固定候选预算，对比基础扩散、仅分叉GRPO、仅轨迹蒸馏及组合；测集合召回、多样性、合法商品率、去噪步数与端到端延迟。",
+    "evidence_quote": "concentrates learning from the vast random corruption space onto the compact trajectory-induced subspace visited by high-quality decoding"
   },
   "74a331fa1a071152cd51ca45c7eeeee91c91ee6ccf4bc518506f29c8db873fe6": {
     "score": 85,
@@ -430,25 +431,25 @@
       "Scaling / 效率"
     ],
     "reading": "值得读",
-    "summary": "仅据摘要，论文在固定Embedding存储预算下比较小型全精度、蒸馏和高秩低比特方案，覆盖六个数据集的七个模型单元。300秩4比特分解只用教师13%的存储，在这些设置中保留约95%至103%的长尾Recall@20。研究还发现教师命中保留率会错排部分方案，强调应直接评估总长尾召回，而非只追求教师一致性。",
+    "summary": "作者机构：得克萨斯大学奥斯汀分校（另有作者署名为无所属机构）。\n仅据摘要，论文在固定Embedding存储预算下比较小型全精度、蒸馏和高秩低比特方案，覆盖六个数据集的七个模型单元。300秩4比特分解只用教师13%的存储，在这些设置中保留约95%至103%的长尾Recall@20。研究还发现教师命中保留率会错排部分方案，强调应直接评估总长尾召回，而非只追求教师一致性。",
     "why_read": "与你的CF长尾补召回、Embedding成本和蒸馏评估相关。相同字节预算下增加表示秩可能优于单纯提高精度，学生也可能命中教师遗漏的有效长尾商品。",
-    "limitations": "仅摘要证据，实验主要是矩阵分解及一个LightGCN单元，不能直接外推SID生成。高秩低比特方案每次评分算术量更高，存储节省不等于服务更快。",
+    "limitations": "仅摘要证据，实验主要是矩阵分解及一个LightGCN单元，不能直接外推SID生成。高秩低比特方案每次评分算术量更高，存储节省不等于服务更快。 机构核验：arXiv v1 PDF首页署名（https://arxiv.org/pdf/2610.36267v1）。",
     "experiment": "固定每行存储字节，对比低维全精度、蒸馏及高维量化CF；同时测总长尾Recall、教师命中保留率、吞吐和量化误差，检查二者是否排序冲突。",
     "evidence_quote": "Compressed recommenders should be judged by total tail recall, not teacher fidelity alone."
   },
   "5783177309604cd07c0527787c950596ad3bbaf411d3df3c2068fbf095728b5c": {
-    "score": 88,
+    "score": 92,
     "relevant": true,
     "topics": [
       "CTR / 精排",
       "长序列建模",
       "Scaling / 效率"
     ],
-    "reading": "值得读",
-    "summary": "仅据摘要，HiRank把序列与非序列特征放入统一推荐骨干，通过门控序列注意力与异构交互实现双向信息融合，并依据有效秩差异组织更紧凑的高阶交互Token。场景感知聚合与不同投影用于减少多场景负迁移；工业数据上报告参数扩展表现改善，线上A/B测试报告人均订单增加2.27%。",
-    "why_read": "对长行为与非序列特征分开建模的精排架构有直接参考价值。有效秩提供了检查Token信息冗余的角度，可与现有长序列压缩和计算预算配置一起研究。",
-    "limitations": "仅见摘要，2.27%的实验周期、显著性与业务环境未知，不能外推为你的GMV收益；有效秩估计细节、线上时延及各模块独立贡献尚待全文核验。",
-    "experiment": "先离线测不同特征组的有效秩，再以相同FLOPs比较原分离架构、双向融合及紧凑Token版本，按业务场景分桶记录AUC、负迁移与p95时延。",
+    "reading": "必读",
+    "summary": "作者机构：阿里巴巴集团、中国人民大学、中国科学院自动化研究所。\n仅据摘要，HiRank针对序列与非序列特征有效秩不同的问题，在统一骨干内结合门控序列注意力与异构特征交互，实现双向融合。场景感知聚合先压缩低阶信息，再由不同投影形成互补的复合词元供高阶注意力处理。工业规模实验报告随参数增长的良好性能扩展，线上A/B测试报告每用户订单数提高2.27%。",
+    "why_read": "直接对应长行为与异构精排统一建模，值得检查所有特征是否应使用相同计算预算；场景感知压缩还可帮助诊断共享表示造成的跨场景负迁移。",
+    "limitations": "研究结论仅据摘要，2.27%是每用户订单数增幅，不是GMV或AUC百分点。线上分流、显著性、服务时延与有效秩计算成本尚未核验，扩展规律也不能任意外推。 机构核验：arXiv v2 PDF首页署名（https://arxiv.org/pdf/2610.35318v2）。",
+    "experiment": "在现有精排中固定参数与延迟预算，对比独立序列模块、同质注意力及异构门控加聚合；按场景测AUC、订单相关离线指标、负迁移及p95延迟。",
     "evidence_quote": "Online A/B tests further show a 2.27% increase in orders per user."
   },
   "8cc28c64b3fbcdc7b37bda7fde44c69c62da9e1d68ec7d465a674bf4786916f5": {
@@ -643,6 +644,33 @@
     "evidence_quote": "processing the shared history once and propagating gradients from every branch for end-to-end training."
   },
   "9aae85b52b55f848b928b220434249f5cd220b2788ddede78bf7e463e2532761": {
+    "score": 45,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏"
+    ],
+    "reading": "跳过",
+    "summary": "仅据摘要，ASD将模型在干净提示下的安全行为作为教师，向处于对抗扰动上下文的同一模型蒸馏，并使用学生在策略采样访问的前缀训练，使其在已出现顺从式开头后仍能恢复拒绝。作者报告较所测先进防御更低的攻击成功率，同时多项选择准确率损失较小，强调固定拒绝模板监督的局限。",
+    "why_read": "教师在干净条件、学生在受扰条件的分布匹配可提供一般蒸馏启发，但研究目标是语言模型防御，和个性化推荐、SID建模及排序没有直接关系，本期不选。",
+    "limitations": "仅摘要证据，未给出攻击成功率与准确率的具体数值、攻击覆盖和计算成本，不能将安全拒绝结果等同推荐稳健性或宣称消除所有攻击风险。",
+    "experiment": "若研究推荐鲁棒性，只迁移训练分布原则：构造正常与受噪行为上下文对，在学生真实访问的输出前缀做蒸馏，对比召回稳定性和额外训练成本。",
+    "evidence_quote": "ASD distills this knowledge to the student (which is the same model under attack) at the prefixes that the student visits"
+  },
+  "18fb8dc167ef4a38337cbe86dc387fd46c8dcc8117c4c65f1a4746d99f809b4c": {
+    "score": 74,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "Scaling / 效率"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，WISD不借助额外特权信息构造更强教师，而是通过低比特量化或幅值剪枝产生弱化模型，以原模型和弱化模型的对比作为在策略自蒸馏信号。在数学和代码推理的多架构多规模测试中，两种弱化方法分别报告平均准确率提高4.0和5.5个百分点，并展示部分具体模型的提升。",
+    "why_read": "无外部教师时利用弱化对比的思路对蒸馏有间接参考，可先验证低成本差分是否比直接自模仿有用；但目前证据来自推理任务，缺少生成推荐收益。",
+    "limitations": "仅摘要证据，平均准确率的百分点增幅不是推荐相对提升；弱化会如何改变SID前缀及长尾分布未验证，模型构造和训练的完整成本也需核算。",
+    "experiment": "若已有可运行GR模型，固定训练预算，对比不蒸馏、原模型自蒸馏与量化弱化对比；按SID层测Recall、前缀负载及长尾覆盖，先避免昂贵剪枝搜索。",
+    "evidence_quote": "quantization and pruning improve average accuracy over the original models by 4.0 and 5.5 percentage points, respectively"
+  },
+  "9815e9c77ef0c3e5757bc8a186528999e995203bfebc3cb213932e7a1e9ab254": {
     "score": 40,
     "relevant": false,
     "topics": [
@@ -650,67 +678,39 @@
       "评估与仿真"
     ],
     "reading": "跳过",
-    "summary": "仅据摘要，Adversarial Self-Distillation把模型面对干净输入时的拒绝行为，蒸馏到受到扰动的同一学生模型，训练前缀来自学生在线生成，因此也覆盖可能已经开始顺从的片段。作者报告相对所测防御方法降低攻击成功率，同时较少影响多项选择准确率，并观察到模型能在顺从开头后恢复拒绝。",
-    "why_read": "学生访问前缀上的蒸馏与推荐训练有形式联系，但研究任务是语言模型拒绝行为，未提供用户偏好、SID或推荐质量实验，不符合本期筛选重点。",
-    "limitations": "仅摘要证据，攻击成功率与推荐指标不可互换，未验证防御覆盖范围与训练成本。不能将拒绝行为恢复的结论直接解释为推荐错误前缀恢复能力。",
-    "experiment": "当前无需复现安全对抗训练。若研究SID蒸馏，可单独比较真实前缀和学生生成前缀上的教师信号，记录错误路径恢复与推荐质量，不照搬拒绝目标。",
-    "evidence_quote": "ASD distills this knowledge to the student (which is the same model under attack) at the prefixes that the student visits"
+    "summary": "仅据摘要，论文从信息论刻画AI可靠性与安全性的权衡，提出由隐层区分良性和危险输入能力约束的边界，并在规范Boltzmann机响应模型中推导精确关系。作者进一步把教师回答视为学生权衡参数的重整化，用两类跨代蒸馏协议分析固定点、长期流动和能力传递临界行为，给出可检验预测。",
+    "why_read": "可作为多代蒸馏能力传递的理论背景，但其安全可靠性参数与推荐中的召回、偏好及多目标价值没有直接对应，不能替代实际GR蒸馏实验，本期不选。",
+    "limitations": "仅摘要证据，所谓普适界仍需核验假设与参数定义；规范模型的精确递推不能直接解释实际Transformer推荐训练。未见推荐数据或工业成本评估。",
+    "experiment": "若关心多代蒸馏退化，先用现有小型推荐基线固定数据与预算，逐代跟踪召回、校准和长尾覆盖；只有能定义并估计对应参数时再测试理论预测。",
+    "evidence_quote": "yielding testable predictions for the critical transition between capability loss and stable transmission."
   },
-  "18fb8dc167ef4a38337cbe86dc387fd46c8dcc8117c4c65f1a4746d99f809b4c": {
-    "score": 68,
+  "3d6c1bc49325697ce3a2b408c9271d7b77d98d2fadce516868f7481a999a7572": {
+    "score": 73,
     "relevant": false,
     "topics": [
       "训练与蒸馏",
+      "评估与仿真"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，TESD针对自教师在部分样本上指导不可靠、导致持续提升受阻的问题，让教师生成轨迹并按任务正确性与上下文独立性获得环境反馈。一方面优化教师的自教学能力，另一方面用这些奖励估计指导可靠性，降低不可靠样本对学生优化的权重；多个数据集和模型规模上报告优于代表性方法。",
+    "why_read": "可为GR教师可靠性分层及按样本加权提供启发，尤其适合检查特权上下文教师是否真正可迁移到学生；但摘要未直接给出推荐或SID实验证据。",
+    "limitations": "仅摘要证据，正确性与上下文独立性奖励如何计算、额外训练代价及具体提升均未展开。推荐点击不是确定答案，不能直接套用推理任务的可靠性估计。",
+    "experiment": "在已有GR蒸馏日志中按教师候选命中和上下文依赖程度分桶，先对比统一权重与可靠性加权，固定预算测Recall与尾部覆盖，再考虑教师同步优化。",
+    "evidence_quote": "down-weight samples with unreliable guidance."
+  },
+  "259805b7cbed470810359cf575b485f99f188a4bf49951eb7d9eb528f5fab663": {
+    "score": 60,
+    "relevant": false,
+    "topics": [
+      "评估与仿真",
       "Scaling / 效率"
     ],
     "reading": "按需读",
-    "summary": "仅据摘要，WISD在没有外部强教师和额外特权信息时，通过低比特量化或幅值剪枝构造较弱的自身副本，再利用原模型与弱模型的对比形成在线自蒸馏信号。数学与代码推理实验中，两种构造分别报告平均准确率增加4.0和5.5个百分点，并展示多个模型规模的结果。研究重点是推理训练，而非压缩学生的线上部署。",
-    "why_read": "弱模型对比信号可能启发低成本推荐蒸馏，但尚无推荐实验。当前有直接验证SID与历史复用的工作，优先阅读那些更容易映射到现有系统的方案。",
-    "limitations": "仅摘要证据，无法确定弱化副本的额外训练和采样成本，平均准确率口径也需全文。量化用于制造训练信号，不等于得到同等收益且更快的线上推荐模型。",
-    "experiment": "若已有蒸馏基础设施，可固定小数据预算，比较原教师与量化副本的分歧是否预测推荐难例；先验证信号相关性，再决定是否实施完整在线自蒸馏。",
-    "evidence_quote": "uses the contrast between the two as a training signal without requiring privileged information."
-  },
-  "9815e9c77ef0c3e5757bc8a186528999e995203bfebc3cb213932e7a1e9ab254": {
-    "score": 35,
-    "relevant": false,
-    "topics": [
-      "训练与蒸馏",
-      "评估与仿真"
-    ],
-    "reading": "跳过",
-    "summary": "仅据摘要，论文从信息论描述模型可靠性与安全性的权衡，以隐藏层区分正常和危险输入的能力刻画边界，再用Boltzmann机建立规范模型。研究还分析蒸馏引起的参数重整化，并推导两种跨代蒸馏协议下的递推与固定点，给出能力损失和稳定传递转变的可检验预测。",
-    "why_read": "与推荐蒸馏只有宽泛理论联系，未涉及SID、用户序列或召回效果。其可靠性安全性参数也不是当前推荐实验可直接使用的训练目标，因此不精选。",
-    "limitations": "仅摘要证据，规范模型假设、参数估计与实验数据适配范围均未核验。理论权衡中的安全性不等于推荐准确率或商业价值，不能直接推断跨代推荐效果。",
-    "experiment": "暂不建议专门复现。若未来研究多代推荐蒸馏，可先跟踪各代Recall、长尾覆盖和校准误差，形成可观测的退化曲线，再评估是否需要该理论工具。",
-    "evidence_quote": "a canonical Boltzmann-machine model of AI response behavior"
-  },
-  "3d6c1bc49325697ce3a2b408c9271d7b77d98d2fadce516868f7481a999a7572": {
-    "score": 65,
-    "relevant": false,
-    "topics": [
-      "训练与蒸馏",
-      "评估与仿真"
-    ],
-    "reading": "按需读",
-    "summary": "仅据摘要，TESD认为在线自蒸馏收益停滞可能来自教师指导不可靠，因此让自教师也生成轨迹，按任务正确性和上下文独立性接收环境反馈。一方面持续优化教师的自教学能力，另一方面用反馈估计指导可靠性，对不可靠样本降低学生学习权重；多个数据集与模型规模上报告优于代表性方法。",
-    "why_read": "可启发推荐蒸馏中的教师可信度过滤，但摘要没有明确推荐验证。需要先确定推荐任务是否存在足够及时、无偏的反馈，才能判断该训练环节值得加入。",
-    "limitations": "仅摘要证据，未给定量收益、额外教师优化成本或推荐线上实验。环境正确性反馈在数学题中易得，在点击与转化任务中不具备相同条件，迁移限制明显。",
-    "experiment": "如已有推荐教师，先在留出集检查教师置信度与实际命中相关性，对低可靠样本降权并与统一蒸馏比较；暂不增加教师在线演化，防止成本掩盖收益。",
-    "evidence_quote": "apply adaptive student-oriented optimization to down-weight samples with unreliable guidance."
-  },
-  "259805b7cbed470810359cf575b485f99f188a4bf49951eb7d9eb528f5fab663": {
-    "score": 52,
-    "relevant": false,
-    "topics": [
-      "Scaling / 效率",
-      "评估与仿真"
-    ],
-    "reading": "跳过",
-    "summary": "仅据摘要，论文在中间状态完全已知的合成换盒任务中，替换模型自身推理链的一步，观察最终答案是否随错误但合法的状态变化。对25个开放权重模型的实验发现依赖程度随规模和能力上升，较大且有能力的模型更依赖文字步骤；作者也指出所测训练检查点未形成能力，限制了训练Token维度分析。",
-    "why_read": "干预中间状态的评估思路可启发Decision Token诊断，但研究对象是合成推理任务，未验证推荐效果或Proxy预测，当前不列入精选。",
-    "limitations": "仅摘要证据，规模与推理链依赖的关系受任务能力约束，不能外推到推荐隐状态或任意模型。单个合成任务也不足以确立普适Scaling Law。",
-    "experiment": "若需诊断推荐Decision Token，可在离线环境保持历史不变，仅干预中间Token，测候选排序变化与准确率；应另设随机干预对照，避免只看相关性。",
-    "evidence_quote": "We replace one step inside a model's own chain with a wrong but valid state and check whether the answer follows the edit."
+    "summary": "仅据摘要，论文在具有精确中间状态的合成换箱任务上，替换模型自身思维链的一步为错误但有效的状态，检测答案是否跟随改动。25个开放模型各测7200题，发现对书面步骤的依赖随规模和能力增强而趋于饱和；所测Qwen3中较大规模的基础与后训练模型差异较小，训练词元轴则受能力不足限制。",
+    "why_read": "对评估解释步骤是否真正影响决策有方法参考，可启发Decision Token或中间推理的干预实验；但它研究合成状态计算，不是推荐Scaling Law或线上证据。",
+    "limitations": "仅摘要证据，合成任务的思维链依赖不证明一般任务解释忠实，更不能外推推荐理由的因果作用。后训练无差异有模型和能力范围限制，不应泛化成全局结论。",
+    "experiment": "若推荐模型输出中间决策词元，先构造可验证的小型意图任务，在保持格式有效时干预一步，对照答案变化与无干预表现，区分依赖程度和原始预测能力。",
+    "evidence_quote": "On tasks requiring step-by-step computation, scale makes the chain of thought more load-bearing"
   },
   "6c62297e08c090a81f3c3b4d2b8ba681a8052ca0aa8099753bf6a547abe6bb8e": {
     "score": 64,
@@ -1000,18 +1000,18 @@
     "evidence_quote": "allowing history length and reasoning depth to grow independently."
   },
   "58c90b6b24ee430ca45cf112142e2c41f5a87b77405d117cb3e206b3fe0595d9": {
-    "score": 75,
+    "score": 76,
     "relevant": false,
     "topics": [
       "训练与蒸馏",
       "评估与仿真"
     ],
     "reading": "按需读",
-    "summary": "仅据摘要，论文把在线蒸馏知识区分为选择哪些候选Token与在哪些位置保留分支，并用逐步下一Token熵序列刻画后者，提出师生熵形状相关ESC。作者在保持教师Token偏好时干预熵，观察分支位置对收益的独立影响，并建立教师选择评估协议，训练前ESC在两名学生上优于已有预测指标。",
-    "why_read": "对SID不同层的不确定性和教师选择有启发，也与低成本筛选相近。但摘要未提供推荐实验，不能据此将ESC直接当成GR蒸馏收益预测器。",
-    "limitations": "仅摘要证据，两名学生的教师选择结果外推有限；熵估计、长度对齐与干预条件需全文。实验未证明可预测商品Recall、长尾覆盖或线上效果，代码也未验证。",
-    "experiment": "可在已有GR师生上先离线计算同一批真实与学生前缀的熵形状，检查其与已知蒸馏收益相关性；固定Tokenizer与温度，避免熵差仅反映码本规模。",
-    "evidence_quote": "where to keep reasoning paths open."
+    "summary": "仅据摘要，论文认为在策略蒸馏不仅学习考虑哪些词元，也学习在哪些位置保留推理分支。作者以逐位置下一词元熵构成熵形状，提出熵形状相关性ESC，并通过保留词元偏好但改变教师熵的干预研究分支位置的作用。训练前ESC在其教师选择协议下为两个学生选出最佳教师，优于已有预测量。",
+    "why_read": "对不同SID层级的蒸馏与低成本教师筛选有间接启发，可检查仅看词元重合是否遗漏不确定性结构；但摘要研究推理模型，没有推荐场景实验证据。",
+    "limitations": "仅摘要证据，两个学生的教师选择结果不足以保证跨模型普适性；摘要没有量化收益。推理文本中的分支熵与固定SID层级的熵含义不同，不能直接迁移。",
+    "experiment": "若已有多教师GR实验，先离线计算各SID层学生教师的熵相关与词元重合，用历史蒸馏收益回测预测排序，控制编码长度和采样温度后再决定是否新增训练。",
+    "evidence_quote": "pre-OPD ESC selects the best teacher for both students and outperforms existing predictors."
   },
   "6ca19ddb47b184ff6486c013459156b69ae746584a94bb88c8a8ebdf8c06164c": {
     "score": 22,
