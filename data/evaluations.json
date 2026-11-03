@@ -533,9 +533,9 @@
       "评估与仿真"
     ],
     "reading": "值得读",
-    "summary": "仅据摘要，COMPOTE针对同一历史可能有多种下一商品兴趣，训练多假设Transformer，目标从均匀监督逐步退火为赢家独占分配，促使不同假设专门化到不同商品区域。推理使用无需归一化的最大相似度规则；三个Amazon基准和相同容量消融显示收益主要来自退火目标，并讨论总体分布划分及排序性质。",
+    "summary": "作者机构：Criteo AI Lab、索邦大学、法国国家科学研究中心（CNRS，ISIR）。\n仅据摘要，COMPOTE针对同一历史可能有多种下一商品兴趣，训练多假设Transformer，目标从均匀监督逐步退火为赢家独占分配，促使不同假设专门化到不同商品区域。推理使用无需归一化的最大相似度规则；三个Amazon基准和相同容量消融显示收益主要来自退火目标，并讨论总体分布划分及排序性质。",
     "why_read": "可为多兴趣召回及GR候选多样性提供训练目标参考。最有价值的是检查多头是否真的分工，而非仅通过增加容量提高指标，也适合诊断相似兴趣头坍缩。",
-    "limitations": "仅摘要证据，理论最优条件不能等同于有限数据训练必然有效。实验仅三个公开基准，未给数值与线上收益；没有直接验证SID路径或多路召回融合。",
+    "limitations": "仅摘要证据，理论最优条件不能等同于有限数据训练必然有效。实验仅三个公开基准，未给数值与线上收益；没有直接验证SID路径或多路召回融合。 机构核验：对应v1 PDF首页署名（https://arxiv.org/pdf/2610.37005v1）。",
     "experiment": "固定总参数和召回候选数，比较单头、多头均匀监督、直接赢家分配及退火目标，联合记录Recall、头间重叠、长尾覆盖和不同随机种子的坍缩比例。",
     "evidence_quote": "an annealed objective that transitions from uniform supervision to a winner-takes-all assignment."
   },
@@ -1096,5 +1096,188 @@
     "limitations": "仅摘要证据，翻转比例依任务和模型而变，不能直接套用到论文筛选或推荐。批内裁判顺序效应与推荐列表的位置偏差也不能混为同一机制。",
     "experiment": "若采用LLM评估推荐解释，固定一小组人工标注样本，对比单条和随机批量裁判，分别测逐项一致率、决策翻转及费用，保持同一模型与提示。",
     "evidence_quote": "the model's own earlier verdicts and the neighbours' texts carry the effect."
+  },
+  "b71fc3ed0fc8d077fe682ba56b7ff6b344afb505f75fa894594c329fb899c529": {
+    "score": 63,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "Scaling / 效率"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，论文研究分布匹配蒸馏中在线Critic的容量和输入信息：ImageNet七种模型规模的受控实验显示，只增加教师而固定小Critic可能损害学生甚至导致坍缩，同时扩展二者能避免所测坍缩。方法进一步让Critic感知学生生成步，估计分步分布分数；图像、文本到图像及视频任务报告一致改善。",
+    "why_read": "提示蒸馏瓶颈可能在反馈估计器而非教师本身，适合反思增加教师是否总有效。但它针对视觉扩散的分布分数匹配，没有推荐或SID实验证据。",
+    "limitations": "仅摘要证据，未给出具体指标与额外Critic成本，不能把联合扩展当作必然最优。视觉连续分布分数与推荐词元概率不同，直接迁移尚无依据。",
+    "experiment": "若已有扩散推荐和在线Critic，固定总训练预算对比教师单独扩展、Critic同步扩展及步条件输入，联合测质量、训练稳定性和反馈开销。",
+    "evidence_quote": "Scaling the critic alongside the teacher, a strategy we call joint scaling, prevents collapse in our experiments"
+  },
+  "1e6ddae895211ba0bbaa3a5fbf59ae22dc93eac833cc0bb7229e3e262eb4b816": {
+    "score": 91,
+    "relevant": true,
+    "topics": [
+      "训练与蒸馏",
+      "CTR / 精排",
+      "Scaling / 效率"
+    ],
+    "reading": "必读",
+    "summary": "作者机构：Meta、普渡大学。\n仅据摘要，DecisionRank将学生文档分数排序成列表作为在策略轨迹，让生成式教师根据该列表反馈直接监督首词元位置分数，并结合离线排序监督，缓解生成列表与决策分数的空间错位。1.7B学生在TREC DL19至23上超过27B教师，8B版本较生成式列表模型在TREC DL和BRIGHT分别报告24.5倍与16.7倍加速。",
+    "why_read": "与你的Decision Token及生成判别融合高度相关：关键是让教师评价学生实际产生的候选顺序，而非只模仿教师词元序列，可为低延迟排序蒸馏设计对照。",
+    "limitations": "仅摘要证据，任务是文档重排而非个性化商品推荐，不能把检索指标转成CTR或GMV。速度依候选数、硬件及基线实现；教师反馈与全部训练成本未核验。 机构核验：对应v1 PDF首页署名（https://arxiv.org/pdf/2610.42128v1）。",
+    "experiment": "固定候选集合、学生规模和训练预算，对比离线分数蒸馏、教师列表监督及学生排序轨迹反馈；测NDCG、候选顺序敏感性和端到端p95延迟。",
+    "evidence_quote": "Item-space OPD constructs the student's rollout by sorting its document scores into a ranked sequence."
+  },
+  "7191801b5a11eb1c019ccae69e9d422b4008c569645f458882b42199d36a5c65": {
+    "score": 83,
+    "relevant": true,
+    "topics": [
+      "评估与仿真",
+      "召回与融合"
+    ],
+    "reading": "值得读",
+    "summary": "仅据摘要，论文用四座美国都市圈的细粒度出行数据构建长期推荐反馈仿真，加入距离和场所容量约束，研究餐饮推荐引起的收入群体隔离与无人访问场所比例。所测算法和城市中至少五分之一场所停止获得模拟访问，超过一半损失来自重训练；偏向低热门场所的重排干预能同时缓解两类问题。",
+    "why_read": "对长尾召回与闭环评估有提醒：静态日志准确率不能反映系统改变曝光后再训练的长期分布。可关注补长尾是否真正增加持续访问，而非只提高一次覆盖。",
+    "limitations": "仅摘要证据，这些是仿真中的场所访问与隔离结果，不是现实商家停业的因果测量。出行和容量假设、舒适度代理及跨业务泛化需要进一步核验。",
+    "experiment": "用历史曝光回放构造推荐到反馈再训练的简化闭环，对比原排序与小比例长尾重排，跟踪无曝光商品比例、重复推荐及分群收益，并明确模拟假设。",
+    "evidence_quote": "at least a fifth of venues stop receiving visits, and that more than half of this loss arises from retraining."
+  },
+  "fcdddeb02ecdaebe436a4f103f0a308fbb29c281a43e2965a0b3c1045eefcc00": {
+    "score": 66,
+    "relevant": true,
+    "topics": [
+      "评估与仿真"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，本文讨论多利益相关方推荐系统的可信性问题，指出平台需要同时面对不同参与方的多重目标，目标之间还可能存在冲突。已有多目标及多方推荐研究尚未充分覆盖可信性要求，文章主要提出开放挑战和需要回答的问题，为研究议题整理背景，而非报告一个新的排序模型或实证收益。",
+    "why_read": "可帮助整理用户、商家和平台的不同目标及评估责任，但与你当前SID、长序列或训练效率实验的直接关系较弱，更适合作为多目标方案的背景阅读。",
+    "limitations": "仅摘要证据，未提供具体算法、数据集、定量结果或验证协议。不能从研究愿景推断已解决目标冲突，也不能宣称可信性指标能直接提升推荐效果。",
+    "experiment": "将现有实验指标映射到用户、供给方和平台三类利益，列出可能冲突及暂未测量的维度；先补齐可观测指标，再决定是否需要复杂多目标优化。",
+    "evidence_quote": "we highlight open challenges and important questions which need to be addressed"
+  },
+  "645a5725759a0a32bd42fa477e3e08b3a0f938379b1710b945859153426de18d": {
+    "score": 89,
+    "relevant": true,
+    "topics": [
+      "召回与融合",
+      "Scaling / 效率",
+      "评估与仿真"
+    ],
+    "reading": "值得读",
+    "summary": "作者机构：卡利卡特国立理工学院（NIT Calicut）、印度理工学院德里分校（IIT Delhi）。\n仅据摘要，Fidelity Synopses用离线地标单元记录各向量检索配置达到精度目标的频率，查询前只做一次最近地标查找，预测不同配置的保真度并选择成本较低者。在580万项LAION及四种Embedding的16种模型方向组合中，满足同等要求时成本中位数为静态部署的0.72倍，批量查表每查询21至32微秒。",
+    "why_read": "与你的向量召回和低成本筛选直接相关：不必让所有请求使用最难查询所需的索引或搜索参数，可先检验便宜的查询难度估计是否能稳定节约服务计算。",
+    "limitations": "仅摘要证据，保真度指精确近邻的保留比例，不是用户相关性或GMV。理想策略约省一半是潜力估计，实际中位成本为0.72倍；分布漂移和校准需验证。 机构核验：对应v1 PDF首页署名（https://arxiv.org/pdf/2610.41407v1）。",
+    "experiment": "在现有向量库离线采样查询，对多个搜索参数测精确Top-K保留率与延迟，建立地标查表；用独立时间段检验违约率、p95延迟和全部查表开销。",
+    "evidence_quote": "to a median of 0.72x the static deployment, with a batched lookup of 21-32 microseconds per query."
+  },
+  "1a9f452a9337a60c5e119cd313f59c1e961ed012848a04bc911bd5d0fecbf285": {
+    "score": 12,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏"
+    ],
+    "reading": "跳过",
+    "summary": "仅据摘要，scAnyOmics把冻结单细胞基础模型的知识蒸馏到多模态学生，将转录组、蛋白标记及染色质可及性数据映射到共享表示，实现部分模态缺失时的跨模态预测与重建。作者汇集六项公开研究的690880个细胞，并以留出供者评估多个指标，同时探索细胞类型、扰动响应和生物年龄相关应用。",
+    "why_read": "缺失模态蒸馏具有一般方法价值，但研究对象是单细胞多组学，未涉及推荐用户、商品及排序问题，不满足本期个人方向优先级，因此不选。",
+    "limitations": "仅摘要证据，未给出具体性能差异与预训练泄漏控制，细胞重建结果不能作为推荐有效性或生物临床效用的证明，本轮也未核验数据和代码。",
+    "experiment": "如果推荐多模态商品存在缺失，只借鉴冻结教师和缺失模态分层评估，固定可用特征比较补全前后召回及成本，无需复现生物学任务。",
+    "evidence_quote": "distills knowledge from a frozen single-cell foundation model into a multimodal student model."
+  },
+  "a30a5988a68599ff68a0f3fcf6bd136d8559177f2198674d448fe4f186af85ec": {
+    "score": 89,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "召回与融合",
+      "训练与蒸馏"
+    ],
+    "reading": "值得读",
+    "summary": "作者机构：阿里巴巴集团高德地图（AMAP）。\n仅据摘要，MILES-Rec从异构地图行为推断服务意图，生成有优先级的自然语言查询。模型先学习渐进推理示例，再以后续交互奖励查询相关性和有序服务覆盖，惩罚重复及冗长；列表与单查询两层优势分配协调互补覆盖。作者构建真实平台日志基准，在四种骨干规模上报告行为策略优化带来一致改进。",
+    "why_read": "与你的多路召回融合及列表级训练目标相关：单条查询有效不代表整组互补，两级归因可用于减少多意图召回冗余，同时保留对单查询质量的约束。",
+    "limitations": "仅摘要证据，缺少具体提升、线上A/B和查询成本；自然语言POI检索不能直接等同SID生成。后续交互奖励可能继承曝光偏差，需检查时间切分与冷启动。 机构核验：对应v1 PDF首页署名（https://arxiv.org/pdf/2610.41319v1）。",
+    "experiment": "固定检索器和总候选预算，对比单查询奖励、列表奖励及两级优势；按行为稀疏程度测POI召回、服务覆盖、查询重合和输出长度，控制未来行为泄漏。",
+    "evidence_quote": "A two-level credit assignment mechanism integrates shared list-level advantages with query-specific advantages"
+  },
+  "36e4e08238f2bbdbc832c4fffb478cd1fd3e5e4f5cecff3565062c336c396288": {
+    "score": 55,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "评估与仿真"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，ERASE针对多模态间接提示注入，保留周围任务信息、用空白内容替换注入区域作为冻结教师参考，学生在受攻击媒体上按自身轨迹学习全分布词元反馈。所测图像、音频及视频基准记录接近零的观察攻击成功率；3B音频受攻击准确率为60.1%，接近未防御模型的干净输入水平。",
+    "why_read": "保留任务信息的条件对照与在策略蒸馏有一般启发，但目标是多模态注入防御，缺少推荐、SID或排序收益证据，本期不列精选。",
+    "limitations": "仅摘要证据，接近零是特定测试中的观察结果，不保证未知攻击安全。可准确擦除注入区域的参考条件在真实场景是否具备，以及完整训练成本仍待核验。",
+    "experiment": "若测试推荐说明对外部噪声的稳健性，先在受控数据中比较清洁、受扰和保留信息的局部擦除参考，联合检查任务质量与扰动依赖，无需扩展攻击能力。",
+    "evidence_quote": "while retaining task utility close to the undefended clean-input level."
+  },
+  "408c5f4dd6bb932d6572e638d8f4d6ea323ce2dbc8555c20e610b07691dcf362": {
+    "score": 78,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "Scaling / 效率"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，Muon-RT复用EMA教师与学生的参数位移，替代隐藏权重矩阵的额外动量缓存，再去除径向分量、做谱归一化并与正交化梯度混合。Qwen2.5-7B自蒸馏中，相对AdamW平均准确率高2.6点且持久内存少42%；相对动量Muon高5.4点且少27%，另在Olmo模型上报告准确率改进。",
+    "why_read": "若训练中本就保存EMA教师，可以考虑复用状态降低额外优化器存储。方法接近蒸馏资源优化，但摘要只有语言模型推理任务，尚无推荐验证。",
+    "limitations": "仅摘要证据，持久训练内存不等于GPU峰值内存，准确率点数不等于推荐收益。理论收敛依赖正则及对齐假设，额外计算和不同教师更新率的敏感性未展开。",
+    "experiment": "仅在已有EMA教师的训练中做小规模对照，固定批量与预算比较AdamW、Muon及复用位移，记录峰值和持久内存、每步耗时及离线召回稳定性。",
+    "evidence_quote": "reuses the teacher-student displacement to eliminate momentum buffers for hidden weight matrices."
+  },
+  "58b98a20378cfd602a0fb5ce786c32ba7a4e4bf8bab5828a893271b98a75327a": {
+    "score": 71,
+    "relevant": false,
+    "topics": [
+      "Scaling / 效率",
+      "训练与蒸馏"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，论文在固定随机首层的双层线性网络和新鲜高斯数据设定下，推导随机舍入影响预测风险的上下界，分析模型规模、训练时间、精度及参数平均的计算扩展规律。结论区分前向与反向特征舍入，并讨论何时低精度换取更大模型或更长训练更有利；另以MLP和小型Transformer检验部分选择。",
+    "why_read": "对有限算力下精度、模型规模与训练时长如何联合配置有参考，但理论模型与工业推荐训练差距较大，不能直接决定Embedding或梯度精度。",
+    "limitations": "仅摘要证据，理论依赖线性结构、数据分布和预设精度日程，未见推荐验证。前向舍入保留某种扩展率不意味着所有低精度实现都保持最终质量。",
+    "experiment": "在小型推荐骨干中固定实际计算预算，分别改变前向和反向精度，配合参数平均测离线误差、训练稳定性与时间；先验证趋势再扩大规模。",
+    "evidence_quote": "Rounding only the forward features preserves the compute scaling of exact arithmetic, while rounding backward features changes it."
+  },
+  "7a5d16239330880166296f2ee16b37d6687554a16aebd8c69822b4f5186d38b9": {
+    "score": 46,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "Scaling / 效率"
+    ],
+    "reading": "跳过",
+    "summary": "仅据摘要，WebOverlay将大型视觉语言教师的网页遮罩识别能力蒸馏到纯视觉检测器，用保留宽高比的重叠动态切片和边界判定处理极长页面，避免缩放破坏文字特征。学生不解析DOM，作者报告优于DOM启发式，并在接近大型多模态模型的精确率和召回率下获得多个数量级吞吐提升与更低部署成本。",
+    "why_read": "可作为专用学生替代通用大模型的工程案例，但研究是网页浮层检测，未涉及推荐匹配、用户行为或生成检索，不符合本期直接相关性要求。",
+    "limitations": "仅摘要证据，吞吐的具体数值、硬件和批量条件未列明，不能外推到推荐系统。切片聚合的误检边界和不同网页来源泛化也仍需完整评估。",
+    "experiment": "如商品长图处理中确有同类问题，先比较保比例切片与直接缩放的识别质量及成本；不因蒸馏关键词就把该检测模型纳入推荐主线实验。",
+    "evidence_quote": "our student model relies purely on visual cues, bypassing DOM tree parsing."
+  },
+  "5a03a35c70f9911a089d3268a80164bc1ec99d3aeaa23b98b03c1d33a83fb71d": {
+    "score": 78,
+    "relevant": true,
+    "topics": [
+      "评估与仿真",
+      "召回与融合"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，论文研究用户可同时属于多个群体的动态推荐，证明在温和条件下不利用当前用户群体信息的策略会产生线性累计遗憾。方法包括按群体交集独立运行UCB，以及两种群体级启发式配合休眠专家选择；在Goodreads和BoardGameGeek上展示交集偏好与群体偏好相近或不同时，不同方法各有优势。",
+    "why_read": "对分群评估和交叉群体收益有参考，可帮助识别平均指标掩盖的差异；但主线是Bandit公平性，与你当前GR、SID或长序列模型实验的直接联系有限。",
+    "limitations": "仅摘要证据，交集方法对群体数的指数依赖限制扩展；群体盲策略的遗憾结论有任务及分布前提，不是所有推荐都必须收集人口属性的结论。",
+    "experiment": "先用已获授权且可用的非敏感业务分群做交叉切片评估，检查平均与尾部群体收益是否一致；如存在反馈探索任务，再测试群体级和交集级策略成本。",
+    "evidence_quote": "intersection-fitting performs better when different intersections within a same group prefer different items."
+  },
+  "94902d010fb9ee20ad6514d5ba38691ced1156246d7aebaa5e956521aecb7b6c": {
+    "score": 68,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "Scaling / 效率"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，Turing后训练把多个专家教师的局部Top-K分布通过教师损失归一化和裁剪进行在线蒸馏，并结合有界派发、路由重放和采样训练异步重叠。Turing-20B-A2B在数学代码等任务上保持专家收益，PPU配置中整合步骤时间从398.7秒降至139.3秒；作者明确加速属于完整训练与执行组合。",
+    "why_read": "多教师校准及训练系统重叠可参考，但任务未包含推荐验证。若当前只有单一推荐教师或小规模学生，引入动态MoE和定制执行路径的投入可能较高。",
+    "limitations": "仅摘要证据，2.86倍依赖特定PPU配置，不能当作线上推理加速。归一化整合分数不是推荐指标，裁剪、校准与系统重叠的独立收益需结合消融核验。",
+    "experiment": "如已有多教师推荐蒸馏，可先固定Top-K和轨迹比较损失归一化与裁剪，测各目标Recall及训练稳定性；系统异步优化应单独计时，避免混合归因。",
+    "evidence_quote": "reflecting the complete training and execution framework rather than any single component."
   }
 }
