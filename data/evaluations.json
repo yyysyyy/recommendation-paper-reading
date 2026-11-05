@@ -1304,9 +1304,9 @@
       "Semantic ID"
     ],
     "reading": "必读",
-    "summary": "仅据摘要，SA-OPSD把自教师监督施加到学生实际Beam搜索访问的状态，按当前裁剪边界距离和相对初始参考的保留裕量下降，优先采样搜索关键状态以控制蒸馏预算。分支蒸馏再解耦目标词元置信度校准与兄弟续接关系，避免目标过强时关系监督被稀释；在工业、Office和Instruments数据上报告良好表现。",
+    "summary": "作者机构：快手科技、阿姆斯特丹大学、华中科技大学。\n仅据摘要，SA-OPSD把自教师监督施加到学生实际Beam搜索访问的状态，按当前裁剪边界距离和相对初始参考的保留裕量下降，优先采样搜索关键状态以控制蒸馏预算。分支蒸馏再解耦目标词元置信度校准与兄弟续接关系，避免目标过强时关系监督被稀释；在工业、Office和Instruments数据上报告良好表现。",
     "why_read": "与你的Prefix路径存活和Beam剪枝问题高度相关。重点是把有限蒸馏预算放到竞争边界，并保留兄弟分支相对关系，适合先做已有日志的裕量诊断。",
-    "limitations": "仅摘要证据，没有具体提升、线上收益或全部训练成本。边界采样依赖参考模型和搜索设置，目标概率与兄弟关系分离的实现及稳定性仍待核验。",
+    "limitations": "仅摘要证据，没有具体提升、线上收益或全部训练成本。边界采样依赖参考模型和搜索设置，目标概率与兄弟关系分离的实现及稳定性仍待核验。 机构核验：对应v1 PDF首页署名（https://arxiv.org/pdf/2611.01568v1）。",
     "experiment": "记录正例路径在各SID层的保留裕量，固定蒸馏状态数对比随机、当前边界及裕量下降采样，再分别测试置信校准和兄弟关系监督的增益。",
     "evidence_quote": "separates target-probability calibration from informative sibling relations"
   },
@@ -1625,5 +1625,263 @@
     "limitations": "仅摘要证据，零额外时延不包括离线改写及核验开销；最高3.0个百分点不等于平均收益。新闻和所测攻击覆盖不能保证防御所有内容操纵。",
     "experiment": "用已核实事实不变的文本对，固定预算比较普通点击监督和分数一致性训练；联合测原始效用、改写敏感性及未知来源稳健性，核算离线成本。",
     "evidence_quote": "Requiring no architectural modifications or test-time filtering"
+  },
+  "e9979630260719581464925c33f3872955276e3634a7e63d63fa586de8e75d1f": {
+    "score": 94,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "Semantic ID",
+      "召回与融合"
+    ],
+    "reading": "必读",
+    "summary": "作者机构：Meta、得克萨斯农工大学（Texas A&M University）。\n仅据摘要，CAP-Mix让流式推荐中的每个商品表示为共享原型的软混合加独立向量，联合训练分配、原型与商品向量，推理保留软表示。SID可作分配先验，完整内容向量可初始化商品表；三数据集匹配比较检验共享结构与硬量化，六组基准相对各自最佳基线的HR@5和NDCG@5平均改善6.9%与13.6%。",
+    "why_read": "直接对应SID硬量化的信息损失和语义参数共享，也与昨天ACT形成有用对照：原子表示与共享结构可不必二选一，适合拆解语义先验到底在哪发挥作用。",
+    "limitations": "仅摘要证据，吞吐1.4至161倍跨不同离散基线，不能当统一服务加速。保留商品独立向量仍有全表成本，未见线上收益；硬软比较需匹配预训练信息。 机构核验：对应v1 PDF首页署名（https://arxiv.org/pdf/2611.05799v1）。",
+    "experiment": "固定骨干、训练预算与内容先验，对比平面商品表、硬SID表示及软原型加残差；按稀疏程度测Recall、参数存储、原型分工和端到端吞吐。",
+    "evidence_quote": "soft mixture of shared prototypes plus an item-specific vector."
+  },
+  "28e51414d2b6dafa9092e59a7cdffc5955d635c5fa82b55e8056993a497c6b8d": {
+    "score": 84,
+    "relevant": true,
+    "topics": [
+      "Semantic ID",
+      "生成式推荐",
+      "评估与仿真"
+    ],
+    "reading": "值得读",
+    "summary": "仅据摘要，这篇教程梳理从任意商品ID到语义ID的演进，讨论将内容、层次与关系信息编码进身份表示，覆盖生成式和判别式推荐、跨模态、冷启动与跨域应用。配套练习包括构建和评估SID、训练模型及迁移实验，并讨论动态SID与多利益方效用等开放问题；它提供学习框架而非新的实证模型结果。",
+    "why_read": "适合把近期SID论文整理成共同对照维度，尤其是区分编码语义、下游目标及动态更新问题；对已有经验可选择性阅读，不必重复基础训练流程。",
+    "limitations": "仅摘要证据，教程主张不能替代实际收益验证，SID也不自动消除嵌入成本或场景差异。摘要称有配套材料，本轮未核验网站、代码和练习完整性。",
+    "experiment": "用现有小型数据建立统一SID评估表，固定码长与码本预算，检查碰撞、前缀负载、冷启动及下游Recall，再把近期方法映射到相同实验维度。",
+    "evidence_quote": "including dynamic semantic IDs and multi-stakeholder utility."
+  },
+  "24bde30bf5eaff6ca727516ed666346be898f96c40a0f37ed51d09689dcc2b4e": {
+    "score": 96,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "Semantic ID",
+      "Scaling / 效率"
+    ],
+    "reading": "必读",
+    "summary": "作者机构：西安电子科技大学、阿里巴巴国际数字商业集团。\n仅据摘要，ReuseGR由7B离线模型按查询规划可共享SID前缀，0.5B在线模型结合用户历史选择并补全。ReuseCut按历史覆盖选缓存深度，路径蒸馏增强补全，BudgetCut在固定分支预算下选择候选。前缀已准备时，相对全在线0.5B平均延迟低38.9%；14天A/B报告CTR与千次请求收入相对提高0.93%和1.05%。",
+    "why_read": "与你的Prefix复用、教师知识转移和Serving预算直接相关。相同查询可共享大模型规划，个性化保留给在线补全，适合流量重复度高的搜索广告场景。",
+    "limitations": "仅摘要证据，时延结果以前缀准备好为前提，不能忽略缓存命中、离线计算与刷新成本。查询级HR不是用户级收益，千次请求收入也不是GMV。 机构核验：对应v1 PDF首页署名（https://arxiv.org/pdf/2611.04259v1）。",
+    "experiment": "按查询重复度与历史长度分桶，固定在线分支预算对比无缓存、固定深度和自适应前缀缓存；测用户Recall、缓存覆盖、离线成本及含未命中的p95延迟。",
+    "evidence_quote": "when prefixes are prepared."
+  },
+  "ea15c42a70811f30011cada75d8cd74e91bab88df0887c42afae24328b8a7c89": {
+    "score": 67,
+    "relevant": false,
+    "topics": [
+      "召回与融合",
+      "评估与仿真"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，DSER在金融资产推荐中保留专家跟随列表的高相关部分，将固定数量槽位替换为回报去相关资产，使相关性与组合表现的权衡显式可调。FAR-Trans实验中少量替换改善风险调整回报且牺牲部分相关性；作者指出收益源于替代资产更高回报而非波动降低，并随市场阶段而变。",
+    "why_read": "可借鉴用单个可审计重排参数显式展示多目标代价，但研究是金融资产组合，与当前GR、SID及长序列主线关联较弱，不列为本期精选。",
+    "limitations": "仅摘要证据，回测不保证未来回报，低相关不等于低风险；结果依协议、市场阶段与交易成本。这里仅评估论文方法，不据此给出资产购买建议。",
+    "experiment": "若借鉴到普通商品推荐，固定候选与替换槽位，比较相关性、品类相关度和覆盖权衡曲线，避免把金融回报指标迁移成未经定义的业务价值。",
+    "evidence_quote": "their return drives the gain, not lower volatility."
+  },
+  "647dac7504bfa4cb7759d77012926458cc71a4b99af5112bbd49bf6eebbfaa04": {
+    "score": 95,
+    "relevant": true,
+    "topics": [
+      "Scaling / 效率",
+      "CTR / 精排",
+      "评估与仿真"
+    ],
+    "reading": "必读",
+    "summary": "作者机构：Meta。\n仅据摘要，论文以缩放层将异构排序模型参数按语义分组联动，再用Axia拟合含缩放先验的代理模型，依据后验选择少量实验，输出待验证的帕累托前沿。固定代表模型与试验预算的协议用于衡量系统改进；Meta广告排序及召回两轮开发的34次迭代中，报告平均离线NE改善0.66%和累计线上提升0.36%。",
+    "why_read": "直接对应你的低成本Proxy与Scaling实验筛选，重点是联动可解释参数组，而非在庞大结构空间盲扫；不确定性也可用于决定下一组最有信息量的实验。",
+    "limitations": "仅摘要证据，0.36%的线上指标口径未说明，不能称收入或GMV；0.66%是离线NE改善。代理拟合和验证总成本、模型集代表性及跨架构外推仍需核验。 机构核验：对应v1 PDF首页署名（https://arxiv.org/pdf/2611.05643v1）。",
+    "experiment": "用现有实验定义宽度、深度与Embedding等语义参数组，固定小试验预算比较随机选点和后验选点；用留出大模型验证排序误差及全部GPU小时。",
+    "evidence_quote": "replacing exhaustive sweeps with a small number of informative runs."
+  },
+  "f8e59b1d7e6c4ee1b6cf7fb8b6dfc30aa908b7100a1edb973709683fd02f1020": {
+    "score": 91,
+    "relevant": true,
+    "topics": [
+      "召回与融合",
+      "训练与蒸馏",
+      "生成式推荐"
+    ],
+    "reading": "必读",
+    "summary": "仅据摘要，SourceFlow把协同结构放入流式CF的源分布：用未观察的协同替代项置换历史商品，依据共现用户其他交互修正替换概率，并在训练后期保留替代项以学习恢复原交互。五个推荐数据集上相对最强流式基线Recall@10平均提高15.7%；将相同源向量错配给其他用户会逆转增益，支持用户源配对的重要性。",
+    "why_read": "与你的CF信息补充生成建模相关，提示协同信息不必只作为编码器条件，也可改变训练起点；错配源向量对照有助于判断收益是否真正来自用户结构。",
+    "limitations": "仅摘要证据，流式CF不是SID自回归生成，未见线上实验与时延数值。平均15.7%是相对Recall收益，协同邻域构造、泄漏控制及训练开销尚未核验。",
+    "experiment": "在小型流式CF中固定预测器，对比全局频率源、协同源和用户错配源，独立加入恢复日程；按头尾测Recall、源目标重合及实际推理步数。",
+    "evidence_quote": "reassigning the same source vectors across users reverses the gains."
+  },
+  "efd4f2d92c96e26a016b0fae57294e1b2cca2c0e4c4310e2f1d16d6dce697d7a": {
+    "score": 78,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "评估与仿真"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，论文发现OPD与多教师OPD的分布内成绩接近教师，不代表完整保留外推和组合泛化。Qwen3数学、代码、Agent及长上下文实验中，部分OOD结果仍低于基础模型或最佳教师。作者分析教师能力、数据覆盖及更新几何，提出几何修补和保留基础能力的回放，以在维持IND表现时改善OOD。",
+    "why_read": "对GR蒸馏验收有方法提醒：仅看训练同域平均Recall可能掩盖长尾或新域遗忘。但本文没有推荐实验，不能把语言任务的差距数值直接套用。",
+    "limitations": "仅摘要证据，近教师的比例和OOD下降基准不同，不能合成一个收益数字；几何解释与修补泛化依实验设置，未核验工业成本和推荐有效性。",
+    "experiment": "在已有GR蒸馏中补充时间外、新品和低频群体留出集，与基础学生及教师同时比较；若确认遗忘，再用固定预算做旧域回放对照。",
+    "evidence_quote": "highlighting the need for algorithms that explicitly support OOD retention and generalization."
+  },
+  "b5a9a181c27f76bfde2234afc0f09ace65d4632bba4cdaccbabd2785b1ac3fea": {
+    "score": 85,
+    "relevant": true,
+    "topics": [
+      "召回与融合",
+      "评估与仿真"
+    ],
+    "reading": "值得读",
+    "summary": "仅据摘要，HARP给冻结LLM推荐骨干增加对称商品画像、检索侧同质性信号和单次反思更新：商品画像规则抽取不额外调用LLM，画像信号在召回而非重排提示中使用，并根据下一交互更新用户描述。四个公开数据集上Hit@1较最强已发表基线提高6.9%至24.0%，消融指向检索侧门控是主要来源。",
+    "why_read": "可参考将偏好画像移到检索阶段，减少提示窗口竞争，并检验用户和商品画像是否需要对称建模。训练无梯度不代表无需评估更新开销。",
+    "limitations": "仅摘要证据，零额外LLM调用仅指规则商品画像，反思更新仍有代价；训练免费不等于在线免费。显著性和公开基准收益不能替代线上验证。",
+    "experiment": "固定检索器与LLM，对比用户单画像、双画像检索门控及反思更新，分别测Recall、重排效果、提示长度与总调用次数，检查漂移。",
+    "evidence_quote": "with the retrieval-side gate as the main source;"
+  },
+  "a9e37fe34cf54893a7ae40faf67ab4e272cf269768e94c92a1ac4c60d75d9703": {
+    "score": 66,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "评估与仿真"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，MDSKILL将Agent技能记忆分为状态理解、行动规划和执行控制三种视图，动态选择高质量技能，构建分视图与综合推理分支，再用在策略自蒸馏内化到共享策略。三个Agent基准比较强化学习、记忆增强和自蒸馏方案，ALFWorld和WebShop报告最高7.1%与8.1%的提升，并提供消融。",
+    "why_read": "技能记忆去噪和多视图蒸馏有间接方法启发，但目标是交互Agent能力，WebShop名称也不代表已验证个性化推荐，故不列本期精选。",
+    "limitations": "仅摘要证据，所称无额外计算开销依其对照配置，未见推荐和SID实验。最高百分比的具体汇总口径及动态质量度量实现需进一步核验。",
+    "experiment": "若推荐Agent已有记忆池，先固定记忆条数与调用预算，对比分视图选取和随机选取，测任务成功、召回及冗余程度，避免先投入完整再训练。",
+    "evidence_quote": "three complementary functional views (state grounding, action planning, and execution control)"
+  },
+  "7c19008b2043f4005823a4f3dabb472ab95946164c1920223c5d2bd8c2cfdced": {
+    "score": 76,
+    "relevant": true,
+    "topics": [
+      "召回与融合",
+      "评估与仿真"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，MM-SAN面向动态异构学术知识图谱的数据集推荐，结合拓扑感知与文本表示，在数据集连接稀疏、元数据不完整时寻找与论文相关的数据资源。方法覆盖传导、半归纳和全归纳设置，声称能不重训适应演化图谱；实验报告优于所测先进方法，但摘要未给具体指标、数据规模和收益数值。",
+    "why_read": "对异构图中缺失信息和新增实体推荐有背景价值，不过对象是学术数据发现，与你的工业GR、SID和长用户行为直接关联有限，按需阅读。",
+    "limitations": "仅摘要证据，不重训适应不代表无需图更新和表示计算。缺少定量、时延和线上验证，不能将所称可扩展性直接外推到动态商品全库。",
+    "experiment": "如已有异构商品图，固定图切分并留出新实体，对比文本单路、图单路及融合，测冷启动Recall、缺元数据鲁棒性和图更新总成本。",
+    "evidence_quote": "adapting to evolving SKGs without requiring retraining."
+  },
+  "353523247c78fb7e18b687877e1404ff0082acfe0baa922fadfdf65a56d64fb4": {
+    "score": 85,
+    "relevant": true,
+    "topics": [
+      "评估与仿真",
+      "CTR / 精排"
+    ],
+    "reading": "值得读",
+    "summary": "仅据摘要，论文在KuaiRand随机插入与生产日志的相同用户视频支持集上审计品类均值。用户去均值加随机总体锚可显著降低绝对误差，却较少改善中心化误差且未可靠改善排序；冻结后验测试中品类校准优于标量校准，但多重比较后的Top-10决策区间含零，作者明确不声称品类本征效应或普适校正。",
+    "why_read": "与你解释分品类推荐指标有关：看板均值变化可能来自用户和商品混合，而不是模型学到了更好偏好。保留随机支持集及多重检验边界很值得借鉴。",
+    "limitations": "仅摘要证据，分解是描述性且依重叠人群、实际目录和日历条件；误差变小不保证决策改善。不能据单个名义显著区间宣称存在稳定排序收益。",
+    "experiment": "如有随机曝光日志，先匹配用户商品支持集，分别测绝对、中心化误差和Top-K决策，再做冻结时间验证和多重比较；没有随机流量时保留推断限制。",
+    "evidence_quote": "we claim neither intrinsic category effects nor a universally valid correction."
+  },
+  "23c5c9a5bcff44c3ffc210e42e37fdf75177f0aadb03614cc7ce1572f98a54b3": {
+    "score": 86,
+    "relevant": true,
+    "topics": [
+      "Scaling / 效率",
+      "召回与融合",
+      "评估与仿真"
+    ],
+    "reading": "值得读",
+    "summary": "仅据摘要，论文研究标注受限且重复多轮微调的稠密检索，以固定参数和独特样本预算下的最小可达验证损失MAEL建模。35个BERT族检索器在MS MARCO子集上支持参数与样本的乘性幂律，并研究最佳训练步数及权重衰减；在所测范围，增大预训练模型降低MAEL的微调计算效率约为增加独特数据的1.46倍。",
+    "why_read": "对有限数据下的向量召回实验规划有价值，尤其区分独特样本量与训练轮数。可借鉴最小可达损失，避免把不同学习率收敛速度当作最终能力差异。",
+    "limitations": "仅摘要证据，1.46倍限所测BERT微调范围，不计预训练总成本，不能当推荐或GR普遍规律。文本检索损失与个性化HitRate、线上GMV口径不同。",
+    "experiment": "在既有召回模型选少量规模和独特样本子集，追踪足够长的学习曲线，分别拟合最优损失与所需步数，用留出配置验证并统计微调总计算量。",
+    "evidence_quote": "non-embedding parameters and unique samples"
+  },
+  "dd2233b7557e71fdaa0de6f312713717a42a3eb918575ea9ca85f6104920408d": {
+    "score": 68,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "评估与仿真"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，Shuffled OPSD打乱教师学生共享题目的词序，同时保留教师专属完整例解；三数学基准和三种Qwen3规模的匹配实验中优于原题对照及标准OPSD，最高平均准确率多3.52个百分点。打乱教师专属例解则各规模均下降，其他控制用于区分题目内容、顺序和教师上下文的作用。",
+    "why_read": "可提醒蒸馏中的共享输入与特权参考发挥不同作用，值得设计负对照。但这不是推荐序列置乱实验，不能据此破坏具有时间意义的用户行为顺序。",
+    "limitations": "仅摘要证据，数学题词序与SID前缀、行为时序不同，结果不能推广成语义一致性普遍有害。最高3.52个百分点不是所有模型的平均提升。",
+    "experiment": "若分析GR自蒸馏，先区分可交换内容特征与必须保序的行为、SID，做限定范围的输入扰动对照，测教师可靠性和Recall，保持训练预算一致。",
+    "evidence_quote": "shuffling the teacher-only worked example reduces accuracy at every scale."
+  },
+  "9d428481c6c1a69e52b88663fccda6ca3d9a25f25df20c284387258075c91a69": {
+    "score": 81,
+    "relevant": true,
+    "topics": [
+      "召回与融合",
+      "评估与仿真"
+    ],
+    "reading": "值得读",
+    "summary": "仅据摘要，LMStaR将个性化推荐解释选择建模为稠密检索：查询编码用户历史和目标元数据，候选编码来自评论的语句，通过多正例对比学习联合适配。Beauty、Toys及Yelp的NDCG@1均最佳，相对CLER提高1.06至8.25点；Amazon两域Top-5也领先，Yelp则仍由CLER更强，并报告跨域迁移和历史反事实分析。",
+    "why_read": "对推荐解释的可复现评估有价值，先从有来源的评论语句选择而非自由生成，便于检验用户相关性；但它优化解释排序，不是下一商品召回。",
+    "limitations": "仅摘要证据，选中评论语句不保证对特定用户的事实或因果解释成立，排名指标也不能证明满意度。Top-1与Top-5的不同结果需同时保留。",
+    "experiment": "若提供推荐解释，固定评论候选对比历史热门语句与文本适配检索；测NDCG、用户历史移除敏感性和事实支持率，避免只看流畅度。",
+    "evidence_quote": "although CLER remains stronger on Yelp."
+  },
+  "90f2e86a16c2976166064f59dd2961e68abc49e98a50bb62b1fd78143f54270f": {
+    "score": 79,
+    "relevant": false,
+    "topics": [
+      "Scaling / 效率",
+      "评估与仿真"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，Hinted Scaling Laws给评测题加入不同强度的特权提示，将小模型接近零准确率的基准变为连续较易版本，以恢复可外推趋势。预训练梯与后训练模型族的数学及知识评测中，预测误差中位数由21降至4.3个百分点，提示还能扩大相近模型差距，以较少样本近似保持排序。",
+    "why_read": "对小Proxy分数落在噪声底时怎样比较方案有启发，但本文并无推荐验证，提示改变任务后是否保持工业推荐实验顺序不能直接假设。",
+    "limitations": "仅摘要证据，提示是评测辅助信息，不能流入真实测试或充当训练收益。低于噪声的外推有效性依模型族和提示设计，数值不能直接套用GR指标。",
+    "experiment": "若小GR几乎无命中，先在诊断集构造可控辅助信息梯度，检查是否保留已知全规模实验排序；把未提示独立测试作为最终判据，严防目标泄漏。",
+    "evidence_quote": "while approximately preserving their order:"
+  },
+  "1d927b737ab02a7f67415e44dfd856153e1d46ac8671e47947965bef6f802435": {
+    "score": 78,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "评估与仿真"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，O3PD在学生生成前缀上仅学习教师Top-K词元次序，不拟合其概率数值，因此对教师温度不变且无需调温。六组教师学生在三项数学基准的平均表现均超过普通OPD，最高多2.9点；其他排序损失有类似改善，分析显示学生可在更偏离教师概率时更好保留次序。",
+    "why_read": "对兄弟分支蒸馏和置信度分离有间接价值，可检验知识来自相对顺序还是绝对概率；但数学推理结果不证明SID搜索只需顺序无需校准。",
+    "limitations": "仅摘要证据，跨前缀Beam累计分数仍依概率尺度，不能从单位置次序不变推出全路径排序不变。Top-K截断、教师置信信息损失及推荐效果未核验。",
+    "experiment": "在同一GR教师学生上固定Top-K和预算，对比KL与词元序关系损失，同时测同层次序、跨前缀校准和Beam路径存活，避免只看局部排序。",
+    "evidence_quote": "without fitting their probability values."
+  },
+  "77d3da0a9ab8852ed117dd11d18c209a242842c590ade4a07a5b7d7bc96fd7e4": {
+    "score": 76,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "评估与仿真"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，Bernoulli OPD指出标准采样反向KL对高置信学生词元的更新会被额外压低，梯度小不必然意味着教师无信息。方法直接匹配该词元的教师学生概率，以有界概率空间校正保留分歧；固定轨迹分析报告恢复高置信词元信号，并从校准、策略移动和训练动态排查更长推理或更大步长等解释。",
+    "why_read": "可为GR蒸馏检查高置信错误和梯度失衡提供间接思路，与只看Loss或词元置信度筛样本不同；但摘要没有推荐实验证据，不列精选。",
+    "limitations": "仅摘要证据，未提供明确任务数值与线上结果。修复特定采样梯度抑制不保证总优化更好，概率校准与教师错误放大之间的权衡仍需验证。",
+    "experiment": "先用固定GR轨迹按学生置信度和教师分歧分桶，检查梯度贡献；如确认高置信错误被压制，再固定预算比较原OPD和单词元概率校正。",
+    "evidence_quote": "bounded probability space correction"
+  },
+  "85ed03c0cad5b8be0425fb23afd1484d40d790c32b2932b2c88fab09fbf68c0c": {
+    "score": 72,
+    "relevant": true,
+    "topics": [
+      "召回与融合",
+      "评估与仿真"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，论文将显式预定义评分、评论中对应维度的隐式评分及未被预定义覆盖的意见结合，用语义相似句子聚类识别标准，再以情感分析估计各类评分。与所有预定义标准相似度均低于阈值的句子归为未定义标准，通过聚合模型做最终评分预测；TripAdvisor和Beer Advocate上报告优于若干基线。",
+    "why_read": "可参考把评论中无法归入既有维度的偏好单独保留，避免结构化标准丢信息。但目标是评分预测，与主线GR、SID和工业效率联系较弱。",
+    "limitations": "仅摘要证据，未给提升数值、强基线或线上测试。相似度阈值和情感评分误差会传播，未定义标准混合多种语义，不能自动解释为真实新偏好。",
+    "experiment": "在已有评论数据固定切分，对比显式评分、显式加隐式及加入未定义维度；测评分误差、维度稳定性和时间泄漏，再判断是否有助实际排序。",
+    "evidence_quote": "a semantic similarity-based sentence clustering method"
   }
 }
