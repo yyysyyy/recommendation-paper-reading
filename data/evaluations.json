@@ -1883,5 +1883,235 @@
     "limitations": "仅摘要证据，未给提升数值、强基线或线上测试。相似度阈值和情感评分误差会传播，未定义标准混合多种语义，不能自动解释为真实新偏好。",
     "experiment": "在已有评论数据固定切分，对比显式评分、显式加隐式及加入未定义维度；测评分误差、维度稳定性和时间泄漏，再判断是否有助实际排序。",
     "evidence_quote": "a semantic similarity-based sentence clustering method"
+  },
+  "f00334df0e3c8e64494accd22a0f2ef96eb3f3a3414d8c2944a08951f4f72f38": {
+    "score": 91,
+    "relevant": true,
+    "topics": [
+      "长序列建模",
+      "训练与蒸馏",
+      "生成式推荐"
+    ],
+    "reading": "必读",
+    "summary": "仅据摘要，DESRec针对不同历史需要不同潜推理深度的问题，在训练时逐序列选择最有信息的推理步，通过自蒸馏将其压入最后状态，供推理排序使用。同时按历史动态分段，提取数量可变的偏好里程碑作为推理输入，以适应兴趣随时间变化。六个公开数据集、四类骨干的实验报告优于八个对照模型。",
+    "why_read": "可将变长兴趣分段与训练时深度选择分别评估。若复杂历史才依赖额外状态，把统一推理深度当默认值可能浪费计算。",
+    "limitations": "仅摘要证据，摘要未给绝对收益、长序列上限或端到端时延，不能把训练时逐用户选择解释成线上自适应提前退出。",
+    "experiment": "固定骨干和推理步预算，对比等长分段、动态分段和逐用户最优步自蒸馏，按历史复杂度记录Recall、算力和推理时延。",
+    "evidence_quote": "it compresses this most informative state into the final reasoning step"
+  },
+  "168db5c47a1316d8aac0ad64dd40dd1baf43f8012cc52cf90c95a946c7eb8de4": {
+    "score": 97,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "Semantic ID",
+      "训练与蒸馏"
+    ],
+    "reading": "必读",
+    "summary": "作者机构：快手科技。\n仅据摘要，BRIDGE研究连续商品表示量化为SID后，解码器丢失质心、邻域和层级难度信息的问题。生成前以冻结码本质心锚定潜推理，用特权EMA教师在学生路径上转移邻域知识，并向较难的前层分配更多循环计算。三个Amazon基准相对最强基线的Recall@10和NDCG@10平均提高10.9%与9.7%，一周5%流量A/B报告eCPM提高0.65%。",
+    "why_read": "可直接对照现有SID训练，检验质心锚点、邻域蒸馏及首层额外计算分别减少了哪些错误。层级分配也呼应近期Beam首步覆盖研究。",
+    "limitations": "仅摘要证据，线上仅报告eCPM，场景与流量范围有限。平均离线增益来自三个Amazon基准，组件贡献及额外在线计算未由摘要量化。 机构核验：对应v1 PDF首页署名（https://arxiv.org/pdf/2611.07425v1）。",
+    "experiment": "冻结码本与骨干，逐项加入质心输入、邻域教师和逐层计算重分配。记录各层路径存活、召回及同等p95预算下的收益。",
+    "evidence_quote": "BRIDGE improves eCPM by 0.65%."
+  },
+  "5d63ccec961b85f7c55565c9f76762102cc8b76c3529197c90fdb07721c154e2": {
+    "score": 95,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "训练与蒸馏",
+      "Scaling / 效率"
+    ],
+    "reading": "必读",
+    "summary": "作者机构：腾讯。\n仅据摘要，LatentRec将潜推理移到训练阶段，由250万参数模块迭代连续状态，以软词元选择连接隐藏状态与输入嵌入。每步用模型输出头监督目标SID首词元，部署时丢弃潜思考模块。在三个Amazon基准上，相对思维链蒸馏基线，HR@10相对提高4.0%至5.0%，报告批量为1时延为该基线的约1/18.3。",
+    "why_read": "适合验证首层SID监督能否把推理收益留在骨干里，并与直接监督Decision Token、部署时仍运行潜推理模块的做法作对照。",
+    "limitations": "仅摘要证据，18.3倍是批量为1对特定思维链基线的结果。训练迭代增加的成本、多批次吞吐和线上推荐效果需要独立验证。 机构核验：对应v1 PDF首页署名（https://arxiv.org/pdf/2611.07866v1）。",
+    "experiment": "固定骨干及候选宽度，对比普通SID监督、潜状态末步监督和逐步首词元监督，部署时均去掉模块并测首层召回及延迟。",
+    "evidence_quote": "the module can be discarded at deployment."
+  },
+  "4ae3c3cf28358a52e8bc3043f5bc8257c3f1d999d86e77098b84115171974cc2": {
+    "score": 84,
+    "relevant": true,
+    "topics": [
+      "召回与融合",
+      "评估与仿真"
+    ],
+    "reading": "值得读",
+    "summary": "仅据摘要，论文从EASE闭式浅层自编码器出发，认为仅使用商品间关系的全秩线性映射可能遗漏细粒度用户相似性，于是构建利用用户间关系的替代形式，并组合用户邻接与商品邻接分布形成混合模型。推荐基准中报告这些替代方案优于EASE，支持在浅层CF对照中显式纳入用户侧。",
+    "why_read": "为现有ItemCF和GR补召回提供一个可解释对照。可先验证用户邻接对稀疏用户的增量覆盖，再决定是否引入复杂训练。",
+    "limitations": "仅摘要证据，摘要未列基准名称、收益幅度及矩阵存储开销。用户邻接可能在工业用户规模下昂贵，不能只比较闭式求解的精度。",
+    "experiment": "固定训练切分和候选数，对比EASE、用户邻接及混合矩阵，按历史长度分层测Recall、覆盖和全矩阵求解存储成本。",
+    "evidence_quote": "combines both user-user and item-item adjacency distributions."
+  },
+  "c4ddd64e15293a6cbdb3063f058b118c351193a1e3a7f2b08268852b871e978a": {
+    "score": 93,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "Semantic ID",
+      "Scaling / 效率"
+    ],
+    "reading": "必读",
+    "summary": "作者机构：Rajax Network Technology（阿里巴巴淘宝闪购）。\n仅据摘要，论文将请求时可供给实体编译为压缩稀疏行SID前缀索引，CPU编译与模型预填充重叠，并跨Beam共享上传索引。合法扩展保留原模型对数概率，约束状态随父Beam移动。日级约束的一例将事后过滤商户从299个中的170个降到29个。另一个跨主机对照在3万条供给下报告服务侧增加0.6毫秒，客户端还观测到额外成本。",
+    "why_read": "实时过滤可直接进入GR解码约束，避免候选先占用Beam再被业务规则淘汰。将实体可供给和SID有效性分开检查有工程价值。",
+    "limitations": "仅摘要证据，日级和请求级数据属于不同阶段。跨主机服务侧时延不等同端到端，摘要明确尚未证明同等召回质量下能节省计算。 机构核验：对应v2 PDF首页署名（https://arxiv.org/pdf/2611.06323v2）。",
+    "experiment": "固定模型与主机，在同一请求供给快照比较后过滤和约束Beam，分别记录合法候选、编译与上传成本、召回和端到端p95。",
+    "evidence_quote": "Legal expansions retain original-model log probabilities"
+  },
+  "5ca45951c62b4709e450ec587b461dc39b57bbf79dae18c91772460856a83e8e": {
+    "score": 39,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "Scaling / 效率"
+    ],
+    "reading": "跳过",
+    "summary": "仅据摘要，论文在沙特阿拉伯语法律基准比较带支持文本和无外部文本两种评测，研究领域适配、量化及知识蒸馏。移除上下文使基础模型准确率差距最多达27个百分点。四位量化报告模型内存下降64%至71%，无上下文选择题准确率变化为负3.2至正1.6个百分点，蒸馏结果更不稳定。",
+    "why_read": "可借鉴压缩评测中区分外部证据可得与不可得的设计，避免上下文掩盖模型本体能力变化。与推荐主线关联较弱。",
+    "limitations": "仅摘要证据，仅一个法律领域基准，内存和正确率不能外推到推荐服务，也不足以支持实际法律场景中的可靠性判断。",
+    "experiment": "若迁移评测思想，固定推荐数据与候选，在有无辅助商品特征两种条件下比较量化前后的召回和内存。",
+    "evidence_quote": "under both with-context and no-context evaluation."
+  },
+  "66c2eefcf436dfbb20463dbfa4fa53e01c355b7c79ac2a33d49b025b2daf3dfc": {
+    "score": 79,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "评估与仿真"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，CoRD保留在策略蒸馏损失，仅把采样状态向教师移动。通过投机解码最大耦合，从教师与学生的几何插值分布采样，尽量保留双方重合的学生词元，在必要时替换为学生低估的词元。六个学生在五项数学基准同训练步数和数据下，平均pass@1较普通OPD提高0.9至2.0点。",
+    "why_read": "与推荐蒸馏中长尾或教师偏好路径从未进入学生轨迹的问题相似。耦合采样可作为少改动地补足路径覆盖的候选机制。",
+    "limitations": "仅摘要证据，实验集中数学任务，等训练步数不等于等采样成本。几何插值可能改变SID合法约束及前缀分布，仍需推荐验证。",
+    "experiment": "固定GR教师、学生和轨迹预算，对比普通OPD、等频随机替换与耦合替换，检查未访路径覆盖、召回和生成采样总成本。",
+    "evidence_quote": "keeps the on-policy loss and moves only the distribution of training states toward the teacher"
+  },
+  "22aa423f879ddfbc70c9f735ef93f2584611771dc0e29a595f851e49e2fe705e": {
+    "score": 74,
+    "relevant": false,
+    "topics": [
+      "Scaling / 效率",
+      "训练与蒸馏"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，论文固定稀疏自编码器总训练预算，分析独特激活数与重复回放的替代关系。激活缓存增长初期提升质量，越过平台后重复使用缓冲区与持续新采样接近。拟合有限数据扩展规律并跨层、模型和多种SAE验证，报告在重建、解释性及探针评估上以8至64倍更少激活存储获得近似质量。",
+    "why_read": "对离线教师激活缓存和低成本重复训练有间接启发。先测多样性平台再决定是否扩大落盘规模，可避免机械按训练步数扩缓存。",
+    "limitations": "仅摘要证据，结果针对语言模型SAE，不能将存储缩减倍数用于推荐蒸馏或实时KV缓存。分布改变和长尾激活覆盖需另外评估。",
+    "experiment": "固定训练步数，按用户与商品分层选独特激活缓存，比较重放与全新采样下的下游召回及存储，检查稀有模式退化。",
+    "evidence_quote": "choose the smallest buffer that reaches the quality plateau and replay it for the remaining budget."
+  },
+  "0f063c23099ecf41b7d45904a253d44112572f5ab25a59a6a0db7bc6a7a8d9a5": {
+    "score": 74,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "评估与仿真"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，O²PD讨论教师在学生轨迹上的可靠性，以及仅在教师Top-K重归一化时遗漏的剩余概率质量。作者将蒸馏限定于学生轨迹前20%的词元，提出将支持集外概率汇总为额外原子或收敛到已对齐交集，并以重叠度门控支持集和α散度，在覆盖模式与寻优模式之间调整。",
+    "why_read": "可与SID兄弟分支监督对比，区分支持集外质量和词元排序的贡献。对短SID而言，应按层测可靠性再设前缀范围。",
+    "limitations": "仅摘要证据，摘要无可对比的定量推荐实验。长文本20%的前缀规则不能直接用于少量SID层，交集筛选也可能排除长尾有益分支。",
+    "experiment": "以同一冻结教师为参照，分SID层统计支持集交集与正确路径覆盖，再比较全分布、Top-K和汇总尾质量三种监督。",
+    "evidence_quote": "pooling mass outside the teacher top-$k$"
+  },
+  "e4b517309298dcb5d18b0ce4b09570f668168c06a173e5dc70136ce2b52e8198": {
+    "score": 73,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "评估与仿真"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，SD-OPD指出在数学推理输出中，风格位置的教师学生对数概率差幅度约为数学位置的3.5倍。它将学生相对预训练基座的中心化变化作为系数，只保留与中心化教师反馈同符号的更新，并每轮重新估计。五个师生设置的六项数学平均pass@1报告增加7.76至10.37个百分点。",
+    "why_read": "提供了从学生已有能力出发的词元权重对照，适合诊断GR蒸馏是否把预算集中于与排序关系弱的高差异词元。",
+    "limitations": "仅摘要证据，风格与数学词元的分解依赖任务定义。推荐中需要同时测合法性、校准和候选覆盖，不能外推数学提升幅度。",
+    "experiment": "缓存相同学生轨迹，用原始教师差和学生基座差分别做权重，按SID层记录梯度和路径存活，固定样本量与训练步数。",
+    "evidence_quote": "keeps each coefficient only when its sign agrees with centered teacher--student feedback"
+  },
+  "b193f23127e33007f978739067d06af516dea6f4b6693cdcbf046441c80a73e8": {
+    "score": 57,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "Scaling / 效率"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，FisherDistill以冻结扩散教师的中间表示估计真实与生成样本的一阶及二阶统计量，再用闭式Fisher判别方向给蒸馏后的生成器提供轻量校正。该方向根据类内变异衡量两类特征可分性，省去额外对抗判别器训练。摘要报告跨多个图像蒸馏框架一致改善，并缩小与对抗细化方法的差距。",
+    "why_read": "提供一种用闭式统计量代替额外可训练判别器的对照。证据来自图像扩散，只有已有连续流推荐生成器时才有较直接实验动机。",
+    "limitations": "仅摘要证据，摘要没有可量化收益或推荐证据。协方差求解、样本量和特征空间维度会影响实际成本及稳定性。",
+    "experiment": "若已有流式推荐，在固定特征层上对比原蒸馏、均值差与正则Fisher方向，测召回和额外统计计算成本。",
+    "evidence_quote": "derive a closed-form Fisher direction"
+  },
+  "758a64c36c2e2ad86353c719e854e57cdaf7bd838097143e7f2482898ca23b09": {
+    "score": 94,
+    "relevant": true,
+    "topics": [
+      "生成式推荐",
+      "召回与融合",
+      "评估与仿真"
+    ],
+    "reading": "必读",
+    "summary": "作者机构：加州大学圣迭戈分校、Google Inc.、弗吉尼亚大学、墨尔本大学、加州大学戴维斯分校。\n仅据摘要，论文发现，用协同过滤分数作为LLM推荐强化学习奖励，即使原CF模型的用户间推荐多样，也可能诱导学生集中曝光。将分数拆成商品跨用户均值和当前用户残差，控制干预识别均值的贡献，再比较逐商品去均值及按标准差归一。两数据集与两种ID方案上，首位不同商品数最多增至9.8倍，排序准确率相近。",
+    "why_read": "直接对应GR+CF奖励设计。先估计与用户无关的商品常量项，可判断个性化信号是否被全局均值压过，并形成低成本消融。",
+    "limitations": "仅摘要证据，9.8倍是跨用户首位去重计数的最大比值，不能解释为Recall、线上多样性或GMV提高。小样本商品均值和方差估计可能不稳。 机构核验：对应v1 PDF首页署名（https://arxiv.org/pdf/2611.07588v1）。",
+    "experiment": "冻结CF奖励模型，在训练集按商品估计均值和收缩方差，对比原奖励、中心化和标准化，按频次评估首位去重、覆盖、Recall与相关性。",
+    "evidence_quote": "while maintaining comparable ranking accuracy."
+  },
+  "d732837bdea9569b181079f864463955e127435faa00e56bb9a8a79c9f81afb7": {
+    "score": 53,
+    "relevant": false,
+    "topics": [
+      "训练与蒸馏",
+      "评估与仿真"
+    ],
+    "reading": "跳过",
+    "summary": "仅据摘要，CST-Bench面向物体移动与交换后的反事实空间状态，构建7082例、六类干预与十二种算子，标注受影响、不变关系及度量变化。评测发现常规空间推理有效的方法可能在反事实任务上失败。CT-OPSD使用这些标注指导教师学习状态转移，再蒸馏给只见真实观测的学生。",
+    "why_read": "可借鉴成对干预及保留不变因素的评测设计。空间转移任务与用户行为或候选排序没有直接联系，当前不进入推荐精选。",
+    "limitations": "仅摘要证据，摘要只称初步改进，未列幅度。带密集标注的视觉反事实不能替代有因果识别条件的推荐干预评估。",
+    "experiment": "如验证推荐对历史编辑的敏感性，构建明确改变某类偏好且保留其他行为的成对样本，分别测目标排序变化及不变项稳定性。",
+    "evidence_quote": "methods effective for ordinary spatial reasoning can still fail under counterfactual interventions."
+  },
+  "b2c7e04104006a50fa87866534834f7b568d6ed6b2bea8ebe601c5b551673a50": {
+    "score": 92,
+    "relevant": true,
+    "topics": [
+      "Semantic ID",
+      "CTR / 精排",
+      "长序列建模"
+    ],
+    "reading": "必读",
+    "summary": "仅据摘要，OptST将LLM生成的用户画像量化为语义词元，并允许下游推荐训练调整量化分区。固定预训练编码器和底层码本，学习有锚定正则的低秩形变，通过直通估计接受推荐监督，预测保留硬最近码。按交互选择可变前缀控制残差信息深度，四个公开数据集报告AUC领先且跨骨干保持改善。",
+    "why_read": "有助于区分用户画像量化适配与商品SID生成。低秩变换和交互条件前缀均可在现有精排上做独立低成本消融。",
+    "limitations": "仅摘要证据，未报告收益数值或线上结果。任务是判别式推荐的用户画像输入，不能假定其码本形变适合生成式商品ID。",
+    "experiment": "冻结画像编码和码本，分别比较固定量化、低秩适配、可变前缀，测AUC、码本漂移、前缀长度和服务耗时。",
+    "evidence_quote": "selects an interaction-conditioned prefix"
+  },
+  "ecb9f263a5a55110794449cf42aba9e505546e2a3b601561ef600f7747eb142a": {
+    "score": 77,
+    "relevant": true,
+    "topics": [
+      "评估与仿真",
+      "生成式推荐"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，IntentGEO按需求具体度和决策阶段评测同一商品描述改写的可见性，发现学习式提示优化可能从推荐意图漂向通用宣传。AMO冻结明确推荐指令核心，只用引用反馈学习附加策略。四领域十意图状态上，相对既有学习基线的平均引用排名增益高35%，并在另行适配的商业助手上评估。",
+    "why_read": "对理解生成系统的曝光机制和提示漂移有参考价值。若研究平台质量，应把描述带来的可见性与用户真实偏好分开测。",
+    "limitations": "仅摘要证据，引用排名不等于商品相关性、满意度或成交。闭源助手需单独适配，结果依模型和评测意图，未给真实流量业务收益。",
+    "experiment": "在有事实一致性约束的离线样本上分意图比较固定核心、附加策略与完整提示优化，同时测引用位置、事实准确及用户效用。",
+    "evidence_quote": "preserves recommendation instructions in a fixed core"
+  },
+  "cf11ded2e7cedc62929a30388f43f6a756a97c72f70e1c2fa74c350a7ecb6337": {
+    "score": 77,
+    "relevant": true,
+    "topics": [
+      "评估与仿真",
+      "召回与融合"
+    ],
+    "reading": "按需读",
+    "summary": "仅据摘要，论文用重复博弈建模用户Agent跨平台比较推荐时的策略行为。平台可改变描述而不改内在价值，用户Agent只能从已消费商品估计平台可信度，因此接入更多资源不一定改善福利。作者给出在特定资源和报告条件下的平均福利保证，并在合成与Amazon构造市场中考察有限周期效用。",
+    "why_read": "适合为多平台或多召回源的信任评估设计受控模拟，尤其考虑实际只观测被选商品反馈造成的验证偏差。",
+    "limitations": "仅摘要证据，福利保证依博弈和交互预算假设，合成及Amazon构造市场不等同真实平台竞争。与SID训练及线上检索效率联系有限。",
+    "experiment": "模拟多个候选源及不同描述偏差，在相同交互预算比较直接融合和按反馈更新可信度，分别测发现率、效用与早期偏差。",
+    "evidence_quote": "using feedback from consumed items only."
   }
 }
